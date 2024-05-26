@@ -1,0 +1,98 @@
+html,
+body {
+  padding: 0;
+  margin: 0;
+  font-family: 'Roboto', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+* {
+  box-sizing: border-box;
+  word-break: break-word;
+}
+
+.hidden {
+  top: -92px;
+}
+
+.swiper {
+  width: 100%;
+  height: 100%;
+}
+
+.swiper-slide {
+  text-align: center;
+  font-size: 18px;
+  background: #fff;
+  width: 100%;
+
+  /* Center slide text vertically */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.swiper-pagination {
+  background-color: rgba(255, 255, 255, 0.5);
+  padding: 8px 0px;
+}
+
+.swiper-button-next {
+  background-color: white;
+  border: 1px solid #dbdbdb;
+  width: 50px !important;
+  height: 50px !important;
+  border-radius: 50%;
+  padding: 10px !important;
+
+  &::after {
+    color: #333f48;
+    font-size: 18px !important;
+  }
+}
+
+.swiper-button-prev {
+  background-color: white;
+  border: 1px solid #dbdbdb;
+  width: 50px !important;
+  height: 50px !important;
+  border-radius: 50%;
+  padding: 10px !important;
+
+  &::after {
+    color: #333f48;
+    font-size: 18px !important;
+  }
+}
+
+.swiper-pagination {
+  background-color: unset;
+}
+
+.MuiBackdrop-invisible {
+  backdrop-filter: unset !important;
+}
+
+.MuiList-root .MuiList-padding {
+  padding: 0 !important;
+}
+
+.css-1pecim6-MuiPaper-root-MuiDialog-paper {
+  width: 700 !important;
+  max-width: unset !important;
+}
+// video::-webkit-media-controls-enclosure {
+//   display: none !important;
+// }
