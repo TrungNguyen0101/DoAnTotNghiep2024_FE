@@ -7,12 +7,12 @@ import {
   FormControl,
   OutlinedInput,
   InputAdornment,
-  styled
+  styled,
+  Container
 } from '@mui/material';
 import SearchTwoToneIcon from '@mui/icons-material/SearchTwoTone';
 import type { ReactElement } from 'react';
 import BaseLayout from 'src/layouts/BaseLayout';
-import Container from '@mui/material/Container';
 
 // const MainContent = styled(Box)(
 //   () => `
