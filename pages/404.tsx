@@ -14,25 +14,25 @@ import SearchTwoToneIcon from '@mui/icons-material/SearchTwoTone';
 import type { ReactElement } from 'react';
 import BaseLayout from 'src/layouts/BaseLayout';
 
-const MainContent = styled(Box)(
-  () => `
-    height: 100%;
-    display: flex;
-    flex: 1;
-    flex-direction: column;
-`
-);
+// const MainContent = styled(Box)(
+//   () => `
+//     height: 100%;
+//     display: flex;
+//     flex: 1;
+//     flex-direction: column;
+// `
+// );
 
-const TopWrapper = styled(Box)(
-  ({ theme }) => `
-  display: flex;
-  width: 100%;
-  flex: 1;
-  align-items: center;
-  justify-content: center;
-  padding: ${theme.spacing(6)};
-`
-);
+// const TopWrapper = styled(Box)(
+//   ({ theme }) => `
+//   display: flex;
+//   width: 100%;
+//   flex: 1;
+//   align-items: center;
+//   justify-content: center;
+//   padding: ${theme.spacing(6)};
+// `
+// );
 
 const OutlinedInputWrapper = styled(OutlinedInput)(
   ({ theme }) => `
