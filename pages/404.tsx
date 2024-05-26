@@ -15,7 +15,7 @@ import type { ReactElement } from 'react';
 import BaseLayout from 'src/layouts/BaseLayout';
 
 const MainContent = styled(Box)(
-  () => `
+  ({ theme }) => `
     height: 100%;
     display: flex;
     flex: 1;
