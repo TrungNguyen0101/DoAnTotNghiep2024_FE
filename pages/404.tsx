@@ -50,9 +50,7 @@ const ButtonSearch = styled(Button)(
 function Status404() {
   return (
     <>
-      <Head>
-        <title>Status - 404</title>
-      </Head>
+      <title>Status - 404</title>
       <MainContent>
         <TopWrapper>
           <Container maxWidth="md">
