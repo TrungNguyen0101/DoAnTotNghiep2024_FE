@@ -15,7 +15,7 @@ import type { ReactElement } from 'react';
 import BaseLayout from 'src/layouts/BaseLayout';
 
 const MainContent = styled(Box)(
-  ({ theme }) => `
+  () => `
     height: 100%;
     display: flex;
     flex: 1;
@@ -50,8 +50,24 @@ function Status404() {
   return (
     <>
       <title>Status - 404</title>
-      <MainContent>
-        <TopWrapper>
+      <div
+        style={{
+          height: '100%',
+          display: 'flex',
+          flex: 1,
+          flexDirection: 'column'
+        }}
+      >
+        <div
+          style={{
+            display: 'flex',
+            width: '100%',
+            flex: 1,
+            alignItems: 'center',
+            justifyContent: 'center',
+            padding: '6px'
+          }}
+        >
           <Container maxWidth="md">
             <Box textAlign="center">
               <img alt="404" height={180} src="/static/images/status/404.svg" />
@@ -95,8 +111,8 @@ function Status404() {
               </Card>
             </Container>
           </Container>
-        </TopWrapper>
-      </MainContent>
+        </div>
+      </div>
     </>
   );
 }
