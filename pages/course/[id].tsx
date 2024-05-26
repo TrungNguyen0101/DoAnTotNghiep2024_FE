@@ -1,30 +1,26 @@
 import api from '@/api';
 import CustomizedAccordions from '@/components/CustomizedAccordions';
 import AppRating from '@/components/AppRating';
-import ConfirmDeleteModal from '@/components/base/modal/ConfirmDeleteModal';
+// import ConfirmDeleteModal from '@/components/base/modal/ConfirmDeleteModal';
 import CourseCard from '@/components/card/CourseCard';
-import { RemoteIcon, VerifyIcon } from '@/components/icons';
+import { RemoteIcon } from '@/components/icons';
 import AoTrinhIcon from '@/components/icons/AoTrinhIcon';
 import SpentTimeIcon from '@/components/icons/SpentTimeIcon';
-import CourseProgramFormAdd from '@/components/management/course/CourseProgramFormAdd';
 import BaseLayout from '@/layouts/BaseLayout';
-import DateCalendarValue from '@/components/Calendar';
+
 import {
   Box,
   Button,
-  Chip,
   Container,
-  Dialog,
-  DialogTitle,
   Divider,
   Grid,
   Stack,
   Typography
 } from '@mui/material';
-import dayjs, { Dayjs } from 'dayjs';
+import { Dayjs } from 'dayjs';
 import { jwtDecode } from 'jwt-decode';
 import { useRouter } from 'next/router';
-import { chooseAllTimeAvailable, findDayHightLight } from 'pages/tutor/[id]';
+import { chooseAllTimeAvailable } from 'pages/tutor/[id]';
 import { useEffect, useRef, useState } from 'react';
 // import io from 'socket.io-client';
 import { io } from 'socket.io-client';

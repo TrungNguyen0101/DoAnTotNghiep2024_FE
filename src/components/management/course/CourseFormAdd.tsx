@@ -166,7 +166,11 @@ function CourseFormAdd({ isOpen, onClose, data, onSave }) {
                 margin="normal"
                 {...formik.getFieldProps('name')}
                 error={formik.touched.name && Boolean(formik.errors.name)}
-                helperText={formik.touched.name && formik.errors.name}
+                helperText={
+                  formik.touched.name && typeof formik.errors.name === 'string'
+                    ? formik.errors.name
+                    : ''
+                }
               />
 
               {/* <Box mt={2}>

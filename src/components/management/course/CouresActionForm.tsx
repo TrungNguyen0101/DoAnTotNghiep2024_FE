@@ -142,7 +142,12 @@ function CourseForm({ isOpen, onClose, data, onSave }) {
                       margin="normal"
                       {...formik.getFieldProps('name')}
                       error={formik.touched.name && Boolean(formik.errors.name)}
-                      helperText={formik.touched.name && formik.errors.name}
+                      helperText={
+                        formik.touched.name &&
+                        typeof formik.errors.name === 'string'
+                          ? formik.errors.name
+                          : null
+                      }
                     />
 
                     <TextField
@@ -184,7 +189,12 @@ function CourseForm({ isOpen, onClose, data, onSave }) {
                       error={
                         formik.touched.tittle && Boolean(formik.errors.tittle)
                       }
-                      helperText={formik.touched.tittle && formik.errors.tittle}
+                      helperText={
+                        formik.touched.tittle &&
+                        typeof formik.errors.tittle === 'string'
+                          ? formik.errors.tittle
+                          : ''
+                      }
                     />
 
                     <TextField
@@ -208,7 +218,12 @@ function CourseForm({ isOpen, onClose, data, onSave }) {
                       margin="normal"
                       {...formik.getFieldProps('name')}
                       error={formik.touched.name && Boolean(formik.errors.name)}
-                      helperText={formik.touched.name && formik.errors.name}
+                      helperText={
+                        formik.touched.name &&
+                        typeof formik.errors.name === 'string'
+                          ? formik.errors.name
+                          : ''
+                      }
                     />
 
                     <TextField

@@ -15,7 +15,7 @@ import CategoryForm from '@/components/management/category/CategoryForm';
 
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import EditIcon from '@mui/icons-material/Edit';
-import ConfirmDeleteModal from '@/components/base/modal/ConfirmDeleteModal';
+// import ConfirmDeleteModal from '@/components/base/modal/ConfirmDeleteModal';
 import api from '@/api';
 
 function Payment() {

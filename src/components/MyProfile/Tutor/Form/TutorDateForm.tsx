@@ -55,8 +55,14 @@ function TutorDateForm({ isOpen, onClose, data, onSave }) {
                 error={
                   formik.touched.start_time && Boolean(formik.errors.start_time)
                 }
+                // helperText={
+                //   formik.touched.start_time && formik.errors.start_time
+                // }
                 helperText={
-                  formik.touched.start_time && formik.errors.start_time
+                  formik.touched.start_time &&
+                  typeof formik.errors.start_time === 'string'
+                    ? formik.errors.start_time
+                    : ''
                 }
               />
 
@@ -70,7 +76,12 @@ function TutorDateForm({ isOpen, onClose, data, onSave }) {
                 error={
                   formik.touched.end_time && Boolean(formik.errors.end_time)
                 }
-                helperText={formik.touched.end_time && formik.errors.end_time}
+                helperText={
+                  formik.touched.end_time &&
+                  typeof formik.errors.end_time === 'string'
+                    ? formik.errors.end_time
+                    : ''
+                }
               />
             </FormGroup>
           </DialogContent>

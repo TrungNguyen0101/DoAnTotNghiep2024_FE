@@ -1,18 +1,9 @@
 import api from '@/api';
-import AppLinearProgress from '@/components/AppLinearProgress';
-import AppRating from '@/components/AppRating';
 import DateCalendarValue from '@/components/Calendar';
 import UserCommentSection from '@/components/UserCommentSection';
 import CourseCard from '@/components/card/CourseCard';
-import {
-  LangueTeachIcon,
-  PersonIcon,
-  SpeakLangueIcon,
-  VerifyIcon
-} from '@/components/icons';
+import { LangueTeachIcon, PersonIcon, VerifyIcon } from '@/components/icons';
 import { Flex, Rate } from 'antd';
-import type { PaginationProps } from 'antd';
-import { Pagination } from 'antd';
 const desc = ['terrible', 'bad', 'normal', 'good', 'wonderful'];
 
 import TryTutorIcon from '@/components/icons/TryTutorIcon';
@@ -33,6 +24,7 @@ import { useRouter } from 'next/router';
 import { useEffect, useRef, useState } from 'react';
 import { jwtDecode } from 'jwt-decode';
 import Snackbar from '@mui/material/Snackbar';
+import AppRating from '@/components/AppRating';
 const DetailTutor = () => {
   const ref = useRef<AbortController | null>(null);
   const router = useRouter();
@@ -44,10 +36,9 @@ const DetailTutor = () => {
   const [availableDay, setAvailableDay] = useState(null);
   const [highlightedDays, setHighlightedDays] = useState([]);
   const [timeAvaiLableDay, setTimeAvailableDay] = useState([]);
-  const [tutor_experience, setTutor_experience] = useState({})
+  const [tutor_experience, setTutor_experience] = useState({});
   const [rate, setRate] = useState(0);
 
-  
   useEffect(() => {
     if (id) {
       const getDetailTutor = async () => {
@@ -55,8 +46,6 @@ const DetailTutor = () => {
           const tutorProfile = await api.get(`/tutor/${id}`);
           if (tutorProfile.status === 200) {
             setTutor(tutorProfile.data.data);
-            
-
 
             const course = await api.get(`/course/get-by-tutor-id/${id}`);
             setCourse(course.data.data);
@@ -97,7 +86,6 @@ const DetailTutor = () => {
     setTimeAvailableDay(chooseAllTimeAvailable(day, availableDay));
   };
 
-
   const [open, setOpen] = useState(false);
 
   const handleClick = () => {
@@ -112,37 +100,33 @@ const DetailTutor = () => {
     setOpen(false);
   };
 
-
   const handleClickChip = () => {
     // console.log('haha');
   };
 
   const handleRate = async (value) => {
-
     const token = localStorage.getItem('access_token');
 
-    if(!token) {
-      handleClick()
+    if (!token) {
+      handleClick();
     } else {
       const decoded = jwtDecode<any>(token);
 
-      if(id) {
+      if (id) {
         const resUser = await api.get(`/tutor/${id}`);
-          if(resUser.status == 200) {
-            const res = await api.post('/rate/create', {
-              rate: value,
-              view_id: resUser.data.data.user.user_id,
-              author_id: decoded?.user_id
-            });
-        setRate(value)
-
-      } else {
-        console.log('error')
+        if (resUser.status == 200) {
+          const res = await api.post('/rate/create', {
+            rate: value,
+            view_id: resUser.data.data.user.user_id,
+            author_id: decoded?.user_id
+          });
+          setRate(value);
+        } else {
+          console.log('error');
+        }
       }
     }
-    }
-   
-  }
+  };
 
   return (
     <Container sx={{ minHeight: '100vh' }}>
@@ -363,14 +347,14 @@ const DetailTutor = () => {
       <Divider sx={{ mt: 2 }} />
       <Stack mt={2} gap="8px">
         <Typography variant="h3">Tổng đánh giá gia sư</Typography>
-      
+
         <Stack flexDirection="row" alignItems="center" gap="8px">
           <AppRating
             sx={{
               fontSize: '28px'
             }}
             onChange={(e) => {
-              handleRate(e.target["value"])
+              handleRate(e.target['value']);
             }}
             value={rate}
           />
@@ -379,13 +363,12 @@ const DetailTutor = () => {
       {/* <Pagination showQuickJumper defaultCurrent={2} total={500} onChange={onChange} /> */}
       <UserCommentSection id={id} />
       <Snackbar
-      open={open}
-      autoHideDuration={3000}
-      onClose={handleClose}
-      message="Bạn cần đăng nhập để đánh giá và bình luận"
-    />
+        open={open}
+        autoHideDuration={3000}
+        onClose={handleClose}
+        message="Bạn cần đăng nhập để đánh giá và bình luận"
+      />
     </Container>
-    
   );
 };
 
