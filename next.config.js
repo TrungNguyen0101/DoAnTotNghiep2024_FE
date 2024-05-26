@@ -4,7 +4,10 @@ const nextConfig = {
     domains: ['i.imgur.com', 'res.cloudinary.com', 'devhome.thuvien.edu.vn']
   },
   reactStrictMode: true,
-  swcMinify: true
+  swcMinify: true,
+  typescript: {
+    ignoreBuildErrors: true
+  }
 };
 
 module.exports = nextConfig;

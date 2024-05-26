@@ -1,7 +1,5 @@
 {
   "compilerOptions": {
-    "module": "es6",
-    "jsx": "react",
     "strict": false,
     "noUnusedLocals": false,
     "noUnusedParameters": false,
@@ -12,8 +10,9 @@
     },
     "allowJs": true,
     "allowSyntheticDefaultImports": true,
+    "jsx": "preserve",
     "lib": ["dom", "es2017"],
-    // "module": "esnext",
+    "module": "esnext",
     "moduleResolution": "node",
     "noEmit": true,
     "preserveConstEnums": true,
