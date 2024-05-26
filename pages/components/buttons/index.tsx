@@ -1,4 +1,3 @@
-import Head from 'next/head';
 import SidebarLayout from '@/layouts/SidebarLayout';
 import PageTitle from '@/components/PageTitle';
 import PageTitleWrapper from '@/components/PageTitleWrapper';
@@ -19,9 +18,9 @@ import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
 function Buttons() {
   return (
     <>
-      <Head>
+      <>
         <title>Buttons - Components</title>
-      </Head>
+      </>
       <PageTitleWrapper>
         <PageTitle
           heading="Buttons"

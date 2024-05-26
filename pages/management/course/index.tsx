@@ -1,4 +1,3 @@
-import Head from 'next/head';
 import SidebarLayout from '@/layouts/SidebarLayout';
 import { Grid, Container, Box, IconButton } from '@mui/material';
 
@@ -127,9 +126,9 @@ function CourseManage() {
 
   return (
     <>
-      <Head>
+      <>
         <title>Quản lý Profile gia sư</title>
-      </Head>
+      </>
       <Container
         maxWidth="lg"
         sx={{

@@ -1,4 +1,3 @@
-import Head from 'next/head';
 import SidebarLayout from '@/layouts/SidebarLayout';
 import Footer from '@/components/Footer';
 
@@ -26,9 +25,9 @@ function ManagementUserProfile() {
 
   return (
     <>
-      <Head>
+      <>
         <title>User Details - Management</title>
-      </Head>
+      </>
       <Container sx={{ mt: 3 }} maxWidth="lg">
         <Grid
           container

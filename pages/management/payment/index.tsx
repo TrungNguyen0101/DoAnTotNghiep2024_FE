@@ -1,4 +1,3 @@
-import Head from 'next/head';
 import SidebarLayout from '@/layouts/SidebarLayout';
 import {
   Grid,
@@ -119,9 +118,9 @@ function Payment() {
 
   return (
     <>
-      <Head>
+      <>
         <title>Quản lý tài chính</title>
-      </Head>
+      </>
       <Container
         maxWidth="lg"
         sx={{

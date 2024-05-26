@@ -11,7 +11,6 @@ import {
 import type { ReactElement } from 'react';
 import BaseLayout from 'src/layouts/BaseLayout';
 
-import Head from 'next/head';
 import RefreshTwoToneIcon from '@mui/icons-material/RefreshTwoTone';
 import LoadingButton from '@mui/lab/LoadingButton';
 
@@ -53,9 +52,9 @@ function Status500() {
 
   return (
     <>
-      <Head>
+      <>
         <title>Status - 500</title>
-      </Head>
+      </>
       <MainContent>
         <Grid
           container

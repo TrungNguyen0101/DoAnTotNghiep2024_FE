@@ -1,5 +1,3 @@
-import Head from 'next/head';
-
 import SidebarLayout from '@/layouts/SidebarLayout';
 
 import PageHeader from '@/content/Dashboards/Crypto/PageHeader';
@@ -15,9 +13,9 @@ import WatchList from '@/content/Dashboards/Crypto/WatchList';
 function DashboardCrypto() {
   return (
     <>
-      <Head>
+      <>
         <title>Crypto Dashboard</title>
-      </Head>
+      </>
       <PageTitleWrapper>
         <PageHeader />
       </PageTitleWrapper>

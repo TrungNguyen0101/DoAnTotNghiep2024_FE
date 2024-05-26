@@ -1,5 +1,4 @@
 import { useState, ChangeEvent } from 'react';
-import Head from 'next/head';
 import SidebarLayout from '@/layouts/SidebarLayout';
 import PageHeader from '@/content/Management/Users/settings/PageHeader';
 import PageTitleWrapper from '@/components/PageTitleWrapper';
@@ -36,9 +35,9 @@ function ManagementUserSettings() {
 
   return (
     <>
-      <Head>
+      <>
         <title>User Settings - Applications</title>
-      </Head>
+      </>
       <PageTitleWrapper>
         <PageHeader />
       </PageTitleWrapper>

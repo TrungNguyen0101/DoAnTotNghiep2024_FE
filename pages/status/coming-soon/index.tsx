@@ -16,7 +16,7 @@ import {
 import type { ReactElement } from 'react';
 import BaseLayout from '@/layouts/BaseLayout';
 
-import Head from 'next/head';
+
 import Logo from '@/components/LogoSign';
 
 import FacebookIcon from '@mui/icons-material/Facebook';
@@ -110,9 +110,9 @@ function StatusComingSoon() {
 
   return (
     <>
-      <Head>
+      <>
         <title>Status - Coming Soon</title>
-      </Head>
+      </>
       <MainContent>
         <TopWrapper>
           <Container maxWidth="md">

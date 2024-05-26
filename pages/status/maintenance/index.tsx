@@ -10,7 +10,6 @@ import {
 import type { ReactElement } from 'react';
 import BaseLayout from '@/layouts/BaseLayout';
 
-import Head from 'next/head';
 import Logo from '@/components/LogoSign';
 
 import FacebookIcon from '@mui/icons-material/Facebook';
@@ -40,9 +39,9 @@ const TopWrapper = styled(Box)(
 function StatusMaintenance() {
   return (
     <>
-      <Head>
+      <>
         <title>Status - Maintenance</title>
-      </Head>
+      </>
       <MainContent>
         <TopWrapper>
           <Container maxWidth="md">

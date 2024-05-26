@@ -1,4 +1,3 @@
-import Head from 'next/head';
 import SidebarLayout from '@/layouts/SidebarLayout';
 import PageTitle from '@/components/PageTitle';
 import PageTitleWrapper from '@/components/PageTitleWrapper';
@@ -18,9 +17,9 @@ import Footer from '@/components/Footer';
 function Tooltips() {
   return (
     <>
-      <Head>
+      <>
         <title>Tooltips - Components</title>
-      </Head>
+      </>
       <PageTitleWrapper>
         <PageTitle
           heading="Tooltips"

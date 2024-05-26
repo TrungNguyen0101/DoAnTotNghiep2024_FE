@@ -1,4 +1,3 @@
-import Head from 'next/head';
 import SidebarLayout from '@/layouts/SidebarLayout';
 import { Grid, Container, Box, IconButton, Checkbox } from '@mui/material';
 
@@ -130,9 +129,9 @@ function ApplicationsTransactions() {
 
   return (
     <>
-      <Head>
+      <>
         <title>Quản lý danh mục</title>
-      </Head>
+      </>
       <Container
         maxWidth="lg"
         sx={{

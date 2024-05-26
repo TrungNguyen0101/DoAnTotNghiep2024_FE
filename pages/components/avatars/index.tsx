@@ -1,4 +1,3 @@
-import Head from 'next/head';
 import SidebarLayout from '@/layouts/SidebarLayout';
 import PageTitle from '@/components/PageTitle';
 import PageTitleWrapper from '@/components/PageTitleWrapper';
@@ -50,9 +49,9 @@ function stringAvatar(name: string) {
 function Avatars() {
   return (
     <>
-      <Head>
+      <>
         <title>Avatars - Components</title>
-      </Head>
+      </>
       <PageTitleWrapper>
         <PageTitle
           heading="Avatars"

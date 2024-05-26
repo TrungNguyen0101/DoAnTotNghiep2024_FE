@@ -1,7 +1,7 @@
 import type { ReactElement, ReactNode } from 'react';
 import type { NextPage } from 'next';
 import type { AppProps } from 'next/app';
-import Head from 'next/head';
+
 import Router from 'next/router';
 import nProgress from 'nprogress';
 import 'nprogress/nprogress.css';
@@ -39,13 +39,13 @@ function TokyoApp(props: TokyoAppProps) {
     <SnackbarProvider maxSnack={3}>
       <StyledEngineProvider injectFirst>
         <CacheProvider value={emotionCache}>
-          <Head>
+          <>
             <title>Tokyo Free White NextJS Typescript Admin Dashboard</title>
             <meta
               name="viewport"
               content="width=device-width, initial-scale=1, shrink-to-fit=no"
             />
-          </Head>
+          </>
           <SidebarProvider>
             <ThemeProvider>
               <LocalizationProvider dateAdapter={AdapterDateFns}>

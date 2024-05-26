@@ -1,4 +1,3 @@
-import Head from 'next/head';
 import SidebarLayout from '@/layouts/SidebarLayout';
 import PageTitle from '@/components/PageTitle';
 import { useState } from 'react';
@@ -69,9 +68,9 @@ function Forms() {
 
   return (
     <>
-      <Head>
+      <>
         <title>Forms - Components</title>
-      </Head>
+      </>
       <PageTitleWrapper>
         <PageTitle
           heading="Forms"

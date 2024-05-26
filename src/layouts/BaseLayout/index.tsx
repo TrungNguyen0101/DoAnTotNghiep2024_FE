@@ -23,7 +23,6 @@ import {
   Typography,
   styled
 } from '@mui/material';
-import Head from 'next/head';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
 import PropTypes from 'prop-types';
@@ -96,9 +95,9 @@ const BaseLayout: FC<BaseLayoutProps> = ({ children }) => {
 
   return (
     <OverviewWrapper>
-      <Head>
+      <>
         <title>Ez Gia sư</title>
-      </Head>
+      </>
       <Stack justifyContent="space-between" mt="70px">
         <AppBar
           sx={{

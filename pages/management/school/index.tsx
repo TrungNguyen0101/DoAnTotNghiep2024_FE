@@ -1,4 +1,3 @@
-import Head from 'next/head';
 import SidebarLayout from '@/layouts/SidebarLayout';
 import { Grid, Container, Box, IconButton, Avatar } from '@mui/material';
 
@@ -105,9 +104,9 @@ function ScoolManage() {
 
   return (
     <>
-      <Head>
+      <>
         <title>Quản lý Thông tin trường học</title>
-      </Head>
+      </>
       <Container
         maxWidth="lg"
         sx={{

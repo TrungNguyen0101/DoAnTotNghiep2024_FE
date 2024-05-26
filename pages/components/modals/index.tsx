@@ -1,4 +1,3 @@
-import Head from 'next/head';
 import SidebarLayout from '@/layouts/SidebarLayout';
 import PropTypes from 'prop-types';
 import { useState } from 'react';
@@ -97,9 +96,9 @@ function Modals() {
 
   return (
     <>
-      <Head>
+      <>
         <title>Modals - Components</title>
-      </Head>
+      </>
       <PageTitleWrapper>
         <PageTitle
           heading="Modals"

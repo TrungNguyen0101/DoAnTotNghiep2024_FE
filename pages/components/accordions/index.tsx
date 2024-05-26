@@ -1,4 +1,3 @@
-import Head from 'next/head';
 import SidebarLayout from '@/layouts/SidebarLayout';
 
 import PageTitle from '@/components/PageTitle';
@@ -21,9 +20,9 @@ import Footer from '@/components/Footer';
 function Accordions() {
   return (
     <>
-      <Head>
+      <>
         <title>Accordions - Components</title>
-      </Head>
+      </>
       <PageTitleWrapper>
         <PageTitle
           heading="Accordions"

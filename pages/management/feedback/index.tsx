@@ -1,4 +1,3 @@
-import Head from 'next/head';
 import SidebarLayout from '@/layouts/SidebarLayout';
 import { Grid, Container, Box, IconButton, Avatar } from '@mui/material';
 
@@ -73,9 +72,9 @@ function RatingPage() {
 
   return (
     <>
-      <Head>
+      <>
         <title>Quản lý đánh giá gia sư</title>
-      </Head>
+      </>
       <Container
         maxWidth="lg"
         sx={{

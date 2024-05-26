@@ -1,4 +1,3 @@
-import Head from 'next/head';
 import SidebarLayout from '@/layouts/SidebarLayout';
 import { Grid, Container, Box, IconButton, Avatar } from '@mui/material';
 
@@ -22,7 +21,6 @@ function TutorProfile() {
   useEffect(() => {
     fetchData();
     console.log(data);
-    
   }, []);
 
   const columns: ProColumns<any>[] = [
@@ -86,12 +84,17 @@ function TutorProfile() {
       title: 'Cv cá nhân',
       width: 100,
       fixed: 'left',
-      render: (_, row) => row.user?.file_cv ? (<a href={row.user?.file_cv} target='_blank' rel="noopener noreferrer">
-        <div style={{display: 'flex', alignItems: 'center'}}>
+      render: (_, row) =>
+        row.user?.file_cv ? (
+          <a href={row.user?.file_cv} target="_blank" rel="noopener noreferrer">
+            <div style={{ display: 'flex', alignItems: 'center' }}>
+              <FileCopyOutlined />
+              <p>Thông tin</p>
+            </div>
+          </a>
+        ) : (
           <FileCopyOutlined />
-          <p>Thông tin</p>
-        </div>
-      </a>) : ( <FileCopyOutlined />)
+        )
     },
     {
       width: 60,
@@ -135,9 +138,9 @@ function TutorProfile() {
 
   return (
     <>
-      <Head>
+      <>
         <title>Quản lý Profile gia sư</title>
-      </Head>
+      </>
       <Container
         maxWidth="lg"
         sx={{

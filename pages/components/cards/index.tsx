@@ -1,4 +1,3 @@
-import Head from 'next/head';
 import SidebarLayout from '@/layouts/SidebarLayout';
 import { useState } from 'react';
 
@@ -62,9 +61,9 @@ function Cards() {
 
   return (
     <>
-      <Head>
+      <>
         <title>Cards - Components</title>
-      </Head>
+      </>
       <PageTitleWrapper>
         <PageTitle
           heading="Cards"
