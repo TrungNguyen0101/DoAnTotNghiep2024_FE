@@ -2,6 +2,7 @@ import {
   Box,
   Card,
   Typography,
+  Container,
   Divider,
   Button,
   FormControl,
@@ -67,7 +68,7 @@ function Status404() {
             padding: '6px'
           }}
         >
-          <div>
+          <Container maxWidth="md">
             <Box textAlign="center">
               <img alt="404" height={180} src="/static/images/status/404.svg" />
               <Typography variant="h2" sx={{ my: 2 }}>
@@ -83,7 +84,7 @@ function Status404() {
                 below should help!
               </Typography>
             </Box>
-            <div maxWidth="sm">
+            <Container maxWidth="sm">
               <Card sx={{ textAlign: 'center', mt: 3, p: 4 }}>
                 <FormControl variant="outlined" fullWidth>
                   <OutlinedInputWrapper
@@ -108,8 +109,8 @@ function Status404() {
                   Go to homepage
                 </Button>
               </Card>
-            </div>
-          </div>
+            </Container>
+          </Container>
         </div>
       </div>
     </>
