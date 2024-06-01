@@ -65,6 +65,9 @@ interface ICustomizedAccordionsProps {
   control?: any;
   setCount?: number;
   setOpenEdit?: any;
+  myCourse?: any;
+  isCourse?: any;
+  course?: any;
 }
 
 function CustomizedAccordions({
@@ -73,7 +76,10 @@ function CustomizedAccordions({
   childTitle,
   data,
   add,
-  setCount
+  setCount,
+  myCourse,
+  isCourse,
+  course
 }: ICustomizedAccordionsProps) {
   const [expanded, setExpanded] = React.useState<string | false>('panel1');
   const [openEdit, setOpenEdit] = React.useState(false);
@@ -176,18 +182,24 @@ function CustomizedAccordions({
             )}
           </Stack>
         </AccordionSummary>
-        {childTitle?.reverse().map((child, index) => {
-          return (
-            <AccordionDetails key={index}>
-              <PhaseCourse
-                add={add}
-                child={child}
-                number={index + 1}
-                setCount={setCount}
-              />
-            </AccordionDetails>
-          );
-        })}
+        {childTitle
+          ?.slice()
+          .reverse()
+          .map((child, index) => {
+            return (
+              <AccordionDetails key={index}>
+                <PhaseCourse
+                  add={add}
+                  child={child}
+                  number={index + 1}
+                  setCount={setCount}
+                  myCourse={myCourse}
+                  isCourse={isCourse}
+                  course={course}
+                />
+              </AccordionDetails>
+            );
+          })}
       </Accordion>
 
       <CourseProgramFormEdit

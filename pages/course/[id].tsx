@@ -9,12 +9,14 @@ import SpentTimeIcon from '@/components/icons/SpentTimeIcon';
 import BaseLayout from '@/layouts/BaseLayout';
 
 import {
+  Avatar,
   Box,
   Button,
   Container,
   Divider,
   Grid,
   Stack,
+  Tooltip,
   Typography
 } from '@mui/material';
 import { Dayjs } from 'dayjs';
@@ -23,6 +25,7 @@ import { useRouter } from 'next/router';
 import { chooseAllTimeAvailable } from 'pages/tutor/[id]';
 import { useEffect, useRef, useState } from 'react';
 // import io from 'socket.io-client';
+import ClearIcon from '@mui/icons-material/Clear';
 import { io } from 'socket.io-client';
 
 const socket = io('http://localhost:10000/');
@@ -31,6 +34,9 @@ const CourseDetail = () => {
   const router = useRouter();
   const course_id = router.query.id;
   const [course, setCourse] = useState(null);
+  const [courseTutorId, setCourseTutorId] = useState('null');
+  const [listUserMessage, setListUserMessage] = useState<any>([]);
+  const [myCourse, setMyCourse] = useState<any>(false);
 
   const [showFormDetail, setShowFormDetail] = useState(false);
   const [showConfirmDelete, setShowConfirmDelete] = useState(false);
@@ -60,12 +66,17 @@ const CourseDetail = () => {
   const [highlightedDays, setHighlightedDays] = useState([]);
   const [timeAvaiLableDay, setTimeAvailableDay] = useState([]);
   const [payload, setPayload] = useState<any>({});
+  const elementRef = useRef(null);
 
   // ----------------------------------------------------------------
   const [userId, setUserId] = useState('');
   const [receiverId, setReceiverId] = useState('');
   const [message, setMessage] = useState('');
   const [messages, setMessages] = useState([]);
+  const [isLoadMessage, setIsLoadMessage] = useState(false);
+  const [userLoadMessage, setUserLoadMessage] = useState('');
+  const [userName, setUserName] = useState('');
+  const [showChat, setShowChat] = useState(false);
 
   useEffect(() => {
     const token = localStorage?.getItem('access_token');
@@ -75,7 +86,6 @@ const CourseDetail = () => {
       socket.emit('authenticate', decoded?.user_id);
 
       socket.on('receive-message', (data) => {
-        console.log(111111111);
         setMessages((prevMessages) => [...prevMessages, data]);
       });
 
@@ -85,16 +95,88 @@ const CourseDetail = () => {
     }
   }, []);
 
+  useEffect(() => {
+    const getMessageById = async () => {
+      try {
+        const res = await api.get(`/message/${userId}`);
+        // if (res.status === 200) {
+        const result = res?.data?.data;
+        const listMessage = await Promise.all(
+          result.map(async (item) => {
+            const res = await api.get(
+              `/user/get-user-info/${item?.receiver_id}`
+            );
+            const userData = res?.data?.data;
+            return {
+              message: item,
+              user: userData
+            };
+          })
+        );
+        setListUserMessage(listMessage);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    if (userId) {
+      getMessageById();
+    }
+  }, [userId]);
+  useEffect(() => {
+    if (elementRef && messages) {
+      elementRef?.current?.scrollIntoView({
+        behavior: 'smooth',
+        block: 'end'
+      });
+    }
+  }, [listUserMessage, messages, elementRef, showChat]);
+
+  useEffect(() => {
+    if (course) {
+      setCourseTutorId(course?.tutor_profile?.user_id);
+    }
+  }, [course]);
+
+  const getMessageByUser = async (receiver_id: any) => {
+    try {
+      const res = await api.get(
+        `/message?sender_id=${userId}&receiver_id=${receiver_id}`
+      );
+      const result = res?.data?.data;
+      // console.log('getMessageByUser ~ result:', result);
+      const filteredResult = result.map(({ message, sender_id }) => ({
+        message,
+        senderId: sender_id
+      }));
+      // console.log('filteredResult ~ filteredResult:', filteredResult);
+      setReceiverId(receiver_id);
+      setMessages(filteredResult);
+      setIsLoadMessage(true);
+      setShowChat(true);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handleLoadMessage = () => {
+    if (userLoadMessage) {
+      getMessageByUser(userLoadMessage);
+    }
+  };
   const sendMessage = () => {
     socket.emit('send-message', {
       receiverId,
       message
     });
-    // setMessages((prevMessages) => [
-    //   ...prevMessages,
-    //   { senderId: userId, message }
-    // ]);
     setMessage('');
+    if (elementRef.current) {
+      console.log(elementRef.current.scrollHeight);
+      // elementRef.current.scrollTo({
+      //   top: elementRef.current.scrollHeight,
+      //   behavior: 'smooth'
+      // });
+      elementRef.current.scrollIntoView({ behavior: 'smooth', block: 'end' });
+    }
   };
 
   useEffect(() => {
@@ -138,6 +220,24 @@ const CourseDetail = () => {
     }
   }, [course_id]);
 
+  useEffect(() => {
+    if (course_id && userId) {
+      const getMyCourse = async () => {
+        try {
+          const res = await api.get(
+            `/booked-session/my-course?user_id=${userId}&course_id=${course_id}`
+          );
+          if (res.status === 200) {
+            setMyCourse(!!res.data.data.length);
+          }
+        } catch (error) {
+          console.log(error);
+        }
+      };
+      getMyCourse();
+    }
+  }, [course_id, userId]);
+
   // const () => = () => {
   //   // const body = {
   //   //   course_id,
@@ -179,6 +279,14 @@ const CourseDetail = () => {
       console.log(error);
     }
   };
+  const handleGetUserTutor = async () => {
+    getMessageByUser(course?.tutor_profile?.user_id);
+    setUserName(
+      course?.tutor_profile?.user?.last_name +
+        ' ' +
+        course?.tutor_profile?.user?.first_name
+    );
+  };
 
   // useEffect(() => {
   //   const handleContextMenu = (event) => {
@@ -198,6 +306,12 @@ const CourseDetail = () => {
   //   };
   // }, []);
 
+  useEffect(() => {
+    const chatBox = document.getElementById('chat-box');
+    if (chatBox) {
+      chatBox.scrollTop = chatBox.scrollHeight;
+    }
+  }, [messages]);
   return (
     <Container sx={{ minHeight: '100vh' }}>
       <Grid mt={5} container>
@@ -206,43 +320,50 @@ const CourseDetail = () => {
           <Typography mt={2} color="secondary" variant="h4">
             {course?.description}
           </Typography>
-          <Divider sx={{ mt: 2 }} />
+          {course?.type_course === 'true' && (
+            <Typography mt={2} variant="h5" color="secondary">
+              Giá tiền : {course?.price}đ
+            </Typography>
+          )}
+          {/* <Divider sx={{ mt: 2 }} />
           <Typography mt={2} variant="h3">
             Thông tin khóa học
-          </Typography>
-          <Typography mt={2} variant="h5" color="secondary">
-            Giá tiền : {course?.price}đ
-          </Typography>
-          <Typography mt={2} variant="h5" color="secondary">
+          </Typography> */}
+
+          {/* <Typography mt={2} variant="h5" color="secondary">
             Đánh giá : <AppRating value={Number(course?.ratting)} />
           </Typography>
           <Typography mt={2} variant="h5" color="secondary">
             Tổng thời lượng của khóa học : {course?.spend_time}
-          </Typography>
+          </Typography> */}
           <Divider sx={{ mt: 2 }} />
           <Typography mt={2} variant="h3">
             Nội dung khóa học
           </Typography>
           <Typography my={2} variant="h5" color="secondary">
-            {course?.course_programs?.length} chương •{' '}
-            {course?.course_program_phases?.length} bài học • thời lượng{' '}
-            {course?.spend_time}
+            {course?.course_programs?.length} chương
           </Typography>
           <Stack spacing={1}>
-            {course?.course_programs?.map((course) => {
-              return (
-                <CustomizedAccordions
-                  key={course.course_program_id}
-                  keyExpand={course.course_program_id}
-                  title={course.tittle}
-                  childTitle={course.course_program_phases}
-                  data={course}
-                  setDataSelected={setDataSelected}
-                  setShowForm={setShowFormDetail}
-                  setShowConfirmDelete={setShowConfirmDelete}
-                />
-              );
-            })}
+            {course?.course_programs
+              ?.slice()
+              .reverse()
+              .map((item) => {
+                return (
+                  <CustomizedAccordions
+                    key={item.course_program_id}
+                    keyExpand={item.course_program_id}
+                    title={item.tittle}
+                    childTitle={item.course_program_phases}
+                    data={item}
+                    setDataSelected={setDataSelected}
+                    setShowForm={setShowFormDetail}
+                    setShowConfirmDelete={setShowConfirmDelete}
+                    myCourse={myCourse}
+                    isCourse={true}
+                    course={course}
+                  />
+                );
+              })}
           </Stack>
         </Grid>
         <Grid
@@ -260,7 +381,7 @@ const CourseDetail = () => {
             noPush
           />
           <Stack alignItems="center" gap="10px">
-            <Box
+            {/* <Box
               sx={{
                 display: 'flex',
                 justifyContent: 'space-between',
@@ -293,23 +414,60 @@ const CourseDetail = () => {
               >
                 <SpentTimeIcon /> Thời lượng: {course?.spend_time}
               </Typography>
-            </Box>
+            </Box> */}
             {/* <Button onClick={handleMua} variant="contained">
               Mua
             </Button> */}
-            <Button
-              sx={{ border: '2px solid #121117' }}
-              variant="contained"
-              onClick={() => {
-                if (localStorage.getItem('access_token')) {
-                  handleMua();
-                } else {
-                  router.push('/auth/login');
-                }
-              }}
-            >
-              Mua khóa học
-            </Button>
+            <div style={{ display: 'flex', flexDirection: 'row', gap: '10px' }}>
+              {course?.type_course === 'true' ? (
+                <>
+                  {myCourse ? (
+                    <Button
+                      sx={{ border: '2px solid #121117' }}
+                      variant="text"
+                      disabled
+                    >
+                      Khóa học đã được mua
+                    </Button>
+                  ) : (
+                    <Button
+                      sx={{ border: '2px solid #121117' }}
+                      variant="contained"
+                      onClick={() => {
+                        if (localStorage.getItem('access_token')) {
+                          handleMua();
+                        } else {
+                          router.push('/auth/login');
+                        }
+                      }}
+                    >
+                      Mua khóa học
+                    </Button>
+                  )}
+                </>
+              ) : (
+                <Button
+                  sx={{ border: '2px solid #121117' }}
+                  variant="text"
+                  disabled
+                >
+                  Khóa học miễn phí
+                </Button>
+              )}
+              {userId && (
+                <>
+                  {courseTutorId !== userId && (
+                    <Button
+                      sx={{ border: '2px solid #121117' }}
+                      variant="contained"
+                      onClick={handleGetUserTutor}
+                    >
+                      Nhắn tin với gia sư
+                    </Button>
+                  )}
+                </>
+              )}
+            </div>
           </Stack>
         </Grid>
       </Grid>
@@ -403,7 +561,7 @@ const CourseDetail = () => {
           </Stack>
         </Stack>
       </Dialog> */}
-      <h1>Chat</h1>
+      {/* <h1>Chat</h1>
       <div>
         {messages.map((msg, index) => (
           <div key={index}>
@@ -425,7 +583,100 @@ const CourseDetail = () => {
         value={message}
         onChange={(e) => setMessage(e.target.value)}
       />
-      <button onClick={sendMessage}>Send</button>
+      <button onClick={sendMessage}>Send</button> */}
+
+      <div>
+        {userId && (
+          <div className="chat-container1">
+            {showChat && (
+              <div style={{ position: 'relative' }}>
+                <div
+                  style={{ display: 'flex', width: '100%' }}
+                  className="text-load"
+                >
+                  <div className="text-load1">{userName}</div>
+                  <ClearIcon
+                    fontSize="small"
+                    style={{ cursor: 'pointer' }}
+                    onClick={() => {
+                      setShowChat(false);
+                    }}
+                  />
+                </div>
+                <div className="chat-container">
+                  <div className="chat-box" id="chat-box" ref={elementRef}>
+                    {messages.map((msg, index) => (
+                      <div key={index}>
+                        {msg.senderId === userId ? (
+                          <div className="chat-message incoming">
+                            <div className="message">{msg.message}</div>
+                          </div>
+                        ) : (
+                          <div className="chat-message outgoing">
+                            <div className="message">{msg.message}</div>
+                          </div>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                  <div className="input-container">
+                    <input
+                      type="text"
+                      className="input1"
+                      id="message-input"
+                      value={message}
+                      placeholder="Type your message..."
+                      onChange={(e) => setMessage(e.target.value)}
+                    />
+                    <button className="button-container" onClick={sendMessage}>
+                      Send
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
+            <div className="image-container">
+              {listUserMessage.length &&
+                listUserMessage.map((message) => {
+                  return (
+                    <Tooltip
+                      arrow
+                      title={
+                        message?.user?.last_name +
+                        ' ' +
+                        message?.user?.first_name
+                      }
+                      placement="left-start"
+                      key={message?.user?.user_id}
+                    >
+                      <div
+                        style={{ marginBottom: '10px' }}
+                        onClick={() => {
+                          getMessageByUser(message?.user?.user_id);
+                          setUserLoadMessage(message?.user?.user_id);
+                          setUserName(
+                            message?.user?.last_name +
+                              ' ' +
+                              message?.user?.first_name
+                          );
+                        }}
+                      >
+                        <Avatar
+                          alt="Remy Sharp"
+                          src={
+                            message?.user?.avatar_url ||
+                            '/static/images/avatars/2.jpg'
+                          }
+                          sx={{ width: 48, height: 48, cursor: 'pointer' }}
+                        />
+                      </div>
+                    </Tooltip>
+                  );
+                })}
+            </div>
+          </div>
+        )}
+      </div>
     </Container>
   );
 };

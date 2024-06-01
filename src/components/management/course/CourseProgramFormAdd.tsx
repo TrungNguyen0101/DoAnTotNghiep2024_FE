@@ -30,7 +30,6 @@ function CourseProgramFormAdd({ isOpen, onClose, data, setCount }) {
       ...value
     };
     const res = await api.post('/course-program/', payload);
-    console.log('onSave ~ res:', res);
     if (res.status === 200) {
       enqueueSnackbar({
         message: 'thêm bài thành công',

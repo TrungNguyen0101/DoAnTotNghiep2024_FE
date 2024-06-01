@@ -11,6 +11,7 @@ export const TUTOR_PATH = '/tutor';
 export const TUTOR_DETAIL_PATH = '/tutor/[id]';
 export const COURSE_DETAIL_PATH = '/course/[id]';
 export const COURSE_PATH = '/course';
+export const MY_COURSE_PATH = '/my-course';
 
 // App const
 export const ROLE_STUDENT_ID = '3fd935a1-4ef6-403c-976a-df558dd911e1';

@@ -93,6 +93,116 @@ a {
   width: 700 !important;
   max-width: unset !important;
 }
-// video::-webkit-media-controls-enclosure {
-//   display: none !important;
-// }
+
+.chat-container {
+  width: 400px;
+  height: 400px;
+  border: 1px solid #ccc;
+  background-color: #fff;
+  // border-bottom-left-radius: 10px;
+  // border-bottom-right-radius: 10px;
+  overflow: auto;
+}
+.chat-container1 {
+  position: fixed;
+  right: 20px;
+  bottom: 20px;
+  z-index: 99;
+  // border-radius: 10px;
+  overflow: auto;
+  display: flex;
+}
+
+.chat-box {
+  padding-bottom: 60px;
+}
+
+.chat-message {
+  padding: 5px;
+  margin: 5px;
+  border-radius: 5px;
+  max-width: 80%;
+}
+
+.outgoing {
+  background-color: #dcf8c6;
+  align-self: flex-start;
+}
+
+.incoming {
+  background-color: #eaeaea;
+  align-self: flex-end;
+  margin-left: auto;
+}
+
+#message-input {
+  width: calc(100% - 80px);
+  margin-right: 10px;
+}
+
+.button-container {
+  width: 70px;
+  padding: 5px;
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  border-radius: 3px;
+  cursor: pointer;
+}
+
+.button-container:hover {
+  background-color: #45a049;
+}
+.input-container {
+  border: 1px solid #ccc;
+  max-width: 380px;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  padding: 10px;
+  width: 100%;
+  background-color: #fff;
+}
+.image-container {
+  height: 400px;
+  overflow: auto;
+  margin-left: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  justify-content: flex-end;
+}
+.image-container::-webkit-scrollbar {
+  width: 6px; /* Độ rộng của thanh cuộn */
+}
+
+.image-container::-webkit-scrollbar-thumb {
+  background-color: #ddd; /* Màu của phần thumb */
+}
+
+.image-container::-webkit-scrollbar-track {
+  // background-color: #0d0d0d;
+}
+.input1 {
+  border: 1px solid #ccc;
+  padding: 10px;
+  width: 90%;
+  border-radius: 10px;
+}
+.text-load {
+  margin-top: 5px;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border-bottom: 0;
+  padding-left: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.text-load1 {
+  font-weight: 700;
+  font-size: 17px;
+}
+.exit {
+  // position: absolute;
+}

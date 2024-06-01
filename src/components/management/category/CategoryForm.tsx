@@ -18,7 +18,6 @@ const validationSchema = yup.object({
 });
 
 function CategoryForm({ isOpen, onClose, data, onSave }) {
-  console.log('CategoryForm ~ data:', data);
   const [selectedImage, setSelectedImage] = useState<any>(null);
   const [selectedImageUrl, setSelectedImagUrl] = useState<any>(null);
 

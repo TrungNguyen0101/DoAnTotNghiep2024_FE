@@ -14,41 +14,45 @@ const Payment = () => {
   const params = router.query;
 
   const [result, setResult] = useState<any>({});
-  console.log('Payment ~ result:', result?.code);
   const [check, setCheck] = useState(true);
+  const [loading, setLoading] = useState(false);
   const { vnp_ResponseCode } = router.query;
 
   useEffect(() => {
-    if (check) {
+    const isEmpty = (obj) => {
+      return Object.keys(obj).length === 0;
+    };
+    if (check && !isEmpty(params)) {
+      console.log('useEffect ~ params:', params);
       const haha = async () => {
+        setLoading(false);
         const res = await api.get('/payment/checksum-payment', {
           params
         });
         console.log('haha ~ res:', res);
         if (res.status === 200) {
           setResult(res.data.data);
+          console.log('haha ~ res.data.data:', res.data.data);
           if (res.data.data.code === '00') {
-            router.push(ROOT_PATH);
             enqueueSnackbar({
               message: 'Thanh toán thành công!',
               variant: 'success',
               autoHideDuration: 1500
             });
-            return;
           } else {
             enqueueSnackbar({
               message: 'Thanh toán thất bại!',
               variant: 'error',
               autoHideDuration: 1500
             });
-            return;
           }
         }
+        setLoading(true);
         setCheck(false);
       };
       haha();
     }
-  }, []);
+  }, [params]);
 
   return (
     <Container
@@ -61,20 +65,26 @@ const Payment = () => {
         flexDirection: 'column'
       }}
     >
-      {result?.code === '00' ? (
-        <Text color="success">
-          <b>Mua khóa học thành công</b>
-        </Text>
+      {loading ? (
+        <>
+          {result?.code === '00' ? (
+            <Text color="success">
+              <b>Mua khóa học thành công</b>
+            </Text>
+          ) : (
+            <Text color="error">
+              <b>Mua khóa học thất bại</b>
+            </Text>
+          )}
+          <Button variant="contained" size="medium" style={{ marginTop: 20 }}>
+            <Link href={`/course/${result?.course?.courseManage?.course_id}`}>
+              Quay lại khóa học
+            </Link>
+          </Button>
+        </>
       ) : (
-        <Text color="error">
-          <b>Mua khóa học thất bại</b>
-        </Text>
+        <div>loading</div>
       )}
-      <Button variant="contained" size="medium" style={{ marginTop: 20 }}>
-        <Link href={`/course/${result?.course?.courseManage?.course_id}`}>
-          Quay lại khóa học
-        </Link>
-      </Button>
     </Container>
   );
 };

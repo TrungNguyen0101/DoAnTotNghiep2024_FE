@@ -1,5 +1,5 @@
 import api from '@/api';
-import { ROLE_TEACHER_ID } from '@/const';
+import { ROLE_STUDENT_ID, ROLE_TEACHER_ID } from '@/const';
 import { Box, Card, Tab, Tabs } from '@mui/material';
 import { jwtDecode } from 'jwt-decode';
 import { useEffect, useState } from 'react';
@@ -10,6 +10,8 @@ import ExpInfo from './ExpInfo';
 import InfoTutor from './InfoTutor';
 import InfoUser from './InfoUser';
 import TutorAvailableDate from './TutorAvailableDate';
+import { useRouter } from 'next/router';
+import EduInfoUser from './EduInfoUser';
 
 export type FormDataHaha = {
   last_name: string;
@@ -51,35 +53,44 @@ function ProfileTutor() {
   // const [school, setSchool] = useState<any>([]);
   const [user, setUser] = useState<any>();
   const [tutorInfo, setTutorInfo] = useState(null);
+  console.log('ProfileTutor ~ tutorInfo:', tutorInfo);
   const [userId, setUserId] = useState(null);
+  const router = useRouter();
+
   useEffect(() => {
     const getInfoUser = async () => {
-      const token = localStorage.getItem('access_token');
-      const decoded = jwtDecode<any>(token);
-      setUserId(decoded?.user_id);
-      try {
-        const res = await api.get(`/user/get-user-info/${decoded?.user_id}`);
-        // const resSchool = await api.get('/school');
+      const token = localStorage?.getItem('access_token');
+      if (token) {
+        const decoded = jwtDecode<any>(token);
+        setUserId(decoded?.user_id);
+        try {
+          const res = await api.get(`/user/get-user-info/${decoded?.user_id}`);
+          // const resSchool = await api.get('/school');
+          console.log('getInfoUser ~ res:', res);
 
-        // setSchool(
-        //   resSchool.data.data.map((item) => {
-        //     return { name: item.name, id: item.school_id };
-        //   })
-        // );
+          // setSchool(
+          //   resSchool.data.data.map((item) => {
+          //     return { name: item.name, id: item.school_id };
+          //   })
+          // );
 
-        if (res.status === 200) {
-          setUser(res.data.data);
-          const user = res.data.data;
-          const tutor_profile = res.data.data.tutor_profiles[0];
+          if (res.status === 200) {
+            setUser(res.data.data);
+            const user = res.data.data;
+            const tutor_profile = res.data.data.tutor_profiles[0];
+            const student_profile = res.data.data.student_profile;
 
-          // tutor
-          if (user.role_id === ROLE_TEACHER_ID) {
-            setTutorInfo(tutor_profile);
-            console.log(tutor_profile);
+            // tutor
+            if (user.role_id === ROLE_TEACHER_ID) {
+              setTutorInfo(tutor_profile);
+              console.log(tutor_profile);
+            } else if (user.role_id === ROLE_STUDENT_ID) {
+              setTutorInfo(student_profile);
+            }
           }
-        }
-      } catch (error) {
-        console.log(error);
+        } catch (error) {}
+      } else {
+        router.push('/auth/login');
       }
     };
     getInfoUser();
@@ -112,12 +123,12 @@ function ProfileTutor() {
           aria-label="basic tabs example"
         >
           <Tab label="Thông tin tài khoản" />
-          {Boolean(tutorInfo?.tutor_profile_id) === true && (
+          {/* {Boolean(tutorInfo?.tutor_profile_id) === true && (
             <Tab label="Thông tin gia sư" />
-          )}
-          {Boolean(tutorInfo?.tutor_profile_id) === true && (
-            <Tab label="Kinh nghiệm - học vấn" />
-          )}
+          )} */}
+          {/* {Boolean(tutorInfo?.tutor_profile_id) === true && ( */}
+          <Tab label="Học vấn" />
+          {/* )} */}
           {/* {Boolean(tutorInfo?.tutor_profile_id) === true && (
             <Tab label="Thời gian dạy" />
           )} */}
@@ -135,8 +146,7 @@ function ProfileTutor() {
             py: '1rem',
             boxShadow: 'rgba(100, 100, 111, 0.2) 0px 7px 29px 0px',
             px: '3rem',
-            width: '100%',
-            height: '100vh'
+            width: '100%'
           }}
         >
           <InfoUser data={user} id={userId} />
@@ -144,7 +154,7 @@ function ProfileTutor() {
       </CustomTabPanel>
 
       {/* thông tin gia sư */}
-      <CustomTabPanel index={1}>
+      {/* <CustomTabPanel index={1}>
         <Card
           sx={{
             background: 'white',
@@ -155,10 +165,10 @@ function ProfileTutor() {
         >
           <InfoTutor data={tutorInfo} />
         </Card>
-      </CustomTabPanel>
+      </CustomTabPanel> */}
 
       {/* thông tin kinh nghiệm */}
-      <CustomTabPanel index={2}>
+      <CustomTabPanel index={1}>
         {/* <Card
           sx={{
             background: 'white',
@@ -180,7 +190,11 @@ function ProfileTutor() {
             mb: 3
           }}
         >
-          <EduInfo data={tutorInfo} />
+          {user?.type === '1' ? (
+            <EduInfoUser data={tutorInfo}></EduInfoUser>
+          ) : (
+            <EduInfo data={tutorInfo} />
+          )}
         </Card>
 
         {/* <Card
@@ -200,7 +214,7 @@ function ProfileTutor() {
         <TutorAvailableDate userId={user?.user_id} />
       </CustomTabPanel> */}
 
-      <CustomTabPanel index={3}>
+      <CustomTabPanel index={2}>
         <Card
           sx={{
             background: 'white',

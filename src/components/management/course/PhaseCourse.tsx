@@ -4,7 +4,16 @@ import CoursePhaseFormEdit from './CoursePhaseFormEdit';
 import api from '@/api';
 import { enqueueSnackbar } from 'notistack';
 
-const PhaseCourse = ({ child, setCount, number, add }) => {
+const PhaseCourse = ({
+  child,
+  setCount,
+  number,
+  add,
+  myCourse,
+  isCourse,
+  course
+}) => {
+  console.log('course:', course);
   const [openPhaseEdit, setOpenPhaseEdit] = useState(false);
   const [youtubeId, setYoutubeId] = useState('');
 
@@ -89,14 +98,67 @@ const PhaseCourse = ({ child, setCount, number, add }) => {
           height="200"
         />
       ) : (
-        <video
-          width="400"
-          height="200"
-          controls
-          controlsList="nodownload  noremoteplayback"
-        >
-          <source id="my-video" src={child?.overview_url} type="video/mp4" />
-        </video>
+        <>
+          {isCourse && course?.type_course === 'true' ? (
+            <>
+              {!myCourse ? (
+                <div style={{ position: 'relative' }}>
+                  <div
+                    style={{
+                      position: 'absolute',
+                      top: '35%',
+                      left: '5%',
+                      zIndex: '99',
+                      fontSize: '18px',
+                      fontWeight: 'bold'
+                    }}
+                  >
+                    Vui lòng mua khóa học để xem video
+                  </div>
+                  <video
+                    width="400"
+                    height="200"
+                    controls
+                    controlsList="nodownload  noremoteplayback"
+                    style={{ filter: 'blur(5px)', pointerEvents: 'none' }}
+                  >
+                    <source
+                      id="my-video"
+                      src={child?.overview_url}
+                      type="video/mp4"
+                    />
+                  </video>
+                </div>
+              ) : (
+                <video
+                  width="400"
+                  height="200"
+                  controls
+                  controlsList="nodownload  noremoteplayback"
+                >
+                  <source
+                    id="my-video"
+                    src={child?.overview_url}
+                    type="video/mp4"
+                  />
+                </video>
+              )}
+            </>
+          ) : (
+            <video
+              width="400"
+              height="200"
+              controls
+              controlsList="nodownload  noremoteplayback"
+            >
+              <source
+                id="my-video"
+                src={child?.overview_url}
+                type="video/mp4"
+              />
+            </video>
+          )}
+        </>
       )}
 
       <CoursePhaseFormEdit

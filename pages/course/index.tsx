@@ -2,7 +2,17 @@ import api from '@/api';
 import ControlTextField from '@/components/ControlTextField';
 import CourseDetailCard from '@/components/card/CourseDetailCard';
 import BaseLayout from '@/layouts/BaseLayout';
-import { Button, Container, Grid, Stack, Typography } from '@mui/material';
+import {
+  Autocomplete,
+  Box,
+  Button,
+  Container,
+  Grid,
+  InputLabel,
+  Stack,
+  TextField,
+  Typography
+} from '@mui/material';
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 
@@ -20,24 +30,49 @@ const Course = () => {
   });
 
   const [courseList, setCourseList] = useState([]);
+  console.log('Course ~ courseList:', courseList);
   const [courseListRoot, setCourseListRoot] = useState([]);
-  console.log(courseList);
+
+  const [subjects, setListSubjects] = useState([]);
+
+  const [value, setValue] = useState(null);
 
   const searchKey = watch('name');
 
+  const getTutor = async () => {
+    try {
+      api.get('/course').then((res) => {
+        setCourseList(res.data.data);
+        setCourseListRoot(res.data.data);
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
   useEffect(() => {
-    const getTutor = async () => {
+    getTutor();
+  }, []);
+
+  useEffect(() => {
+    const getSubject = async () => {
       try {
-        api.get('/course').then((res) => {
-          setCourseList(res.data.data);
-          setCourseListRoot(res.data.data);
-        });
-      } catch (error) {
-        console.log(error);
+        const rs = await api.get('/category');
+
+        if (rs.status == 200) {
+          let subjectArray = [];
+          rs.data.data.map((item, key) => {
+            subjectArray.push({
+              label: item.name,
+              value: item.category_id
+            });
+          });
+          setListSubjects(subjectArray);
+        }
+      } catch (e) {
+        console.log(e);
       }
     };
-
-    getTutor();
+    getSubject();
   }, []);
 
   useEffect(() => {
@@ -52,6 +87,25 @@ const Course = () => {
     } else {
       setCourseList(courseListRoot);
     }
+  };
+
+  const handleChange = (event, newValue) => {
+    // const getCourse = () => {
+    //   api.get('/course/get-by-category-id/' + newValue?.value).then((res) => {
+    //     console.log('api.get ~ res:', res);
+    //     setCourseList(res.data.data);
+    //     setCourseListRoot(res.data.data);
+    //   });
+    // };
+    let lists = [...courseListRoot];
+
+    if (newValue?.value) {
+      lists = lists.filter((course) => course.category_id === newValue?.value);
+      setCourseList(lists);
+    } else {
+      setCourseList(courseListRoot);
+    }
+    setValue(newValue);
   };
 
   return (
@@ -77,6 +131,30 @@ const Course = () => {
                 margin: 'none'
               }}
             />
+          </Grid>
+          <Grid item xs={4}>
+            <Box>
+              <InputLabel
+                sx={{
+                  '&': {
+                    mb: 0.5
+                  }
+                }}
+              >
+                Chọn khóa học
+              </InputLabel>
+              <Autocomplete
+                disablePortal
+                id="combo-box-demo"
+                value={value}
+                options={subjects}
+                onChange={handleChange}
+                sx={{ width: 300 }}
+                renderInput={(params) => (
+                  <TextField {...params} fullWidth placeholder="Khóa học" />
+                )}
+              />
+            </Box>
           </Grid>
         </Grid>
         {courseList.map((item, i) => (

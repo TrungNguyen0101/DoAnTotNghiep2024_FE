@@ -1,8 +1,10 @@
+import api from '@/api';
 import Footer from '@/components/Footer';
 import {
   COURSE_PATH,
   LOGIN_PATH,
   LOGOUT_PATH,
+  MY_COURSE_PATH,
   MY_PROFILE_PATH,
   REGISTER_PATH,
   ROOT_PATH,
@@ -23,6 +25,7 @@ import {
   Typography,
   styled
 } from '@mui/material';
+import { jwtDecode } from 'jwt-decode';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
 import PropTypes from 'prop-types';
@@ -46,15 +49,38 @@ const BaseLayout: FC<BaseLayoutProps> = ({ children }) => {
   const router = useRouter();
   const loginPath = router.asPath === LOGIN_PATH;
   const [isShowAvatar, setIsShowAvatar] = useState('');
+  const [isAccount, setIsAccount] = useState(false);
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
 
   useEffect(() => {
-    const access_token = localStorage.getItem('access_token');
-    const avatar_url = localStorage.getItem('avatar_url');
-    if (access_token) {
-      setIsShowAvatar(avatar_url || '/static/images/avatars/2.jpg');
-    }
+    const handleGetAccount = async () => {
+      const access_token = localStorage.getItem('access_token');
+      if (access_token) {
+        const decoded = jwtDecode<any>(access_token);
+        const res = await api.get(`/user/get-user-info/${decoded?.user_id}`);
+        setIsShowAvatar(
+          res?.data?.data?.avatar_url || '/static/images/avatars/2.jpg'
+        );
+        setIsAccount(true);
+      } else {
+        setIsAccount(false);
+      }
+    };
+    handleGetAccount();
   }, [router.asPath]);
+
+  const homeCategories = useMemo(() => {
+    const categories = [
+      { name: 'Gia sư', value: TUTOR_PATH },
+      { name: 'Khoá học', value: COURSE_PATH }
+    ];
+
+    if (isAccount) {
+      categories.push({ name: 'Khoá học của tôi', value: MY_COURSE_PATH });
+    }
+
+    return categories;
+  }, [isAccount]);
 
   const handlePopoverOpen = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
@@ -84,6 +110,9 @@ const BaseLayout: FC<BaseLayoutProps> = ({ children }) => {
 
       case COURSE_PATH:
         return COURSE_PATH;
+
+      case MY_COURSE_PATH:
+        return MY_COURSE_PATH;
 
       case STUDENT_PATH:
         return STUDENT_PATH;
@@ -248,9 +277,3 @@ BaseLayout.propTypes = {
 };
 
 export default BaseLayout;
-
-const homeCategories = [
-  // { name: 'Trang Chủ', value: ROOT_PATH },
-  { name: 'Gia sư', value: TUTOR_PATH },
-  { name: 'Khoá học', value: COURSE_PATH }
-];

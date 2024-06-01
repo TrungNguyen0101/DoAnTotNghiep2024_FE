@@ -57,9 +57,10 @@ const Tutor = () => {
   const handFilterSubJect = async () => {
     if (value != null) {
       let subjectId = value.value;
-      const rs = await api.post(`/category/searchByCategryId/${subjectId}`);
-      console.log(rs);
-      setTutorList(rs?.data.data);
+      console.log('handFilterSubJect ~ subjectId:', subjectId);
+      // const rs = await api.post(`/category/searchByCategryId/${subjectId}`);
+      // console.log(rs);
+      // setTutorList(rs?.data.data);
     }
   };
 
@@ -132,7 +133,7 @@ const Tutor = () => {
               }}
             />
           </Grid>
-          <Grid item xs={4}>
+          {/* <Grid item xs={4}>
             <Box>
               <InputLabel
                 sx={{
@@ -155,14 +156,14 @@ const Tutor = () => {
                 )}
               />
             </Box>
-          </Grid>
+          </Grid> */}
         </Grid>
 
         {tutorList.map((item) => (
           <TutorDetailCard key={item.tutor_profile_id} data={item} />
         ))}
 
-        <Pagination onChange={changeSize} defaultCurrent={1} total={500} />
+        {/* <Pagination onChange={changeSize} defaultCurrent={1} total={500} /> */}
       </Stack>
     </Container>
   );

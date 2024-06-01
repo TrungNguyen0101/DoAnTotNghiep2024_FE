@@ -12,6 +12,7 @@ import {
 import { useEffect, useState } from 'react';
 
 const TutorDetailCard = ({ data }: TutorDetailCardProps) => {
+  console.log('TutorDetailCard ~ data:', data?.user?.avatar_url);
   const router = useRouter();
   const [certificate, setCertificates] = useState([]);
 
@@ -24,7 +25,7 @@ const TutorDetailCard = ({ data }: TutorDetailCardProps) => {
       border="2px solid #121117"
       p={3}
       borderRadius="4px"
-      height={275}
+      // height={275}
       direction="row"
       spacing={3}
       justifyContent="space-between"
@@ -41,6 +42,7 @@ const TutorDetailCard = ({ data }: TutorDetailCardProps) => {
             src={data?.user?.avatar_url || '/static/images/avatars/3.jpg'}
             layout="fill"
             style={{ borderRadius: '4px' }}
+            objectFit="cover"
           />
         </Box>
 

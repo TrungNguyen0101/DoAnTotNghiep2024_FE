@@ -27,11 +27,31 @@ const CourseDetailCard = ({
   setShowForm,
   setShowConfirmDelete,
   setCount,
-  edit
+  edit,
+  isMyCourse
 }: CourseDetailCardProps) => {
   const router = useRouter();
   const [course, setCourse] = useState(null);
+  const [countCourse, setCountCourse] = useState(0);
   const [open, setOpen] = useState(false);
+
+  useEffect(() => {
+    if (data) {
+      const getMyCourse = async () => {
+        try {
+          const res = await api.get(
+            `/booked-session/count-course?course_id=${data?.course_id}`
+          );
+          if (res.status === 200) {
+            setCountCourse(res?.data.data.count);
+          }
+        } catch (error) {
+          console.log(error);
+        }
+      };
+      getMyCourse();
+    }
+  }, [data]);
 
   useEffect(() => {
     const getCourse = async () => {
@@ -50,6 +70,7 @@ const CourseDetailCard = ({
   return (
     <Stack
       borderRadius="4px"
+      style={{ marginBottom: '50px' }}
       boxShadow={'rgba(100, 100, 111, 0.2) 0px 7px 29px 0px'}
     >
       <Stack
@@ -81,6 +102,13 @@ const CourseDetailCard = ({
 
           <Stack width="100%" spacing={2}>
             <Typography variant="h2">{data?.name}</Typography>
+            <Typography
+              variant="h4"
+              fontWeight={400}
+              className="text-ellipsis-2-row"
+            >
+              {data?.description || ``}
+            </Typography>
             <Stack spacing={1}>
               <Stack>
                 <Typography
@@ -90,7 +118,7 @@ const CourseDetailCard = ({
                   alignItems="center"
                   gap="8px"
                 >
-                  <LangueTeachIcon /> Tiếng việt
+                  <LangueTeachIcon /> {data?.category?.name}
                 </Typography>
               </Stack>
               <Stack>
@@ -101,10 +129,10 @@ const CourseDetailCard = ({
                   alignItems="center"
                   gap="8px"
                 >
-                  <PersonIcon /> 20 học sinh đang theo học
+                  <PersonIcon /> {countCourse} học sinh đang theo học
                 </Typography>
               </Stack>
-              <Stack>
+              {/* <Stack>
                 <Typography
                   display="flex"
                   variant="h5"
@@ -114,12 +142,12 @@ const CourseDetailCard = ({
                 >
                   <SpeakLangueIcon /> ngoại ngữ: Tiếng Anh
                 </Typography>
-              </Stack>
+              </Stack> */}
 
-              <Typography mt={2} variant="h4">
+              {/* <Typography mt={2} variant="h4">
                 Chứng chỉ TOEIC 800+{' '}
-              </Typography>
-              <Typography
+              </Typography> */}
+              {/* <Typography
                 variant="h4"
                 fontWeight={400}
                 className="text-ellipsis-2-row"
@@ -128,7 +156,7 @@ const CourseDetailCard = ({
                   `Lorem Ipsum is simply dummy text of the printing and typesetting
                 industry. Lorem Ipsum has been the industry's standard dummy text
                 ever since the ...`}
-              </Typography>
+              </Typography> */}
             </Stack>
           </Stack>
         </>
@@ -137,17 +165,20 @@ const CourseDetailCard = ({
           <Stack direction="row" justifyContent="space-between">
             <Stack direction="row" height={52} spacing={2}>
               <Stack width="fit-content" justifyContent="center"></Stack>
-              <Stack width="fit-content" justifyContent="center">
-                <Typography variant="h4">{data.price} đ</Typography>
-                <Typography variant="h5" color="secondary">
-                  45p/1h
-                </Typography>
-              </Stack>
+              {data?.type_course === 'true' ? (
+                <Stack width="fit-content" justifyContent="center">
+                  <Typography variant="h4">{data.price} đ</Typography>
+                </Stack>
+              ) : (
+                <Stack width="fit-content" justifyContent="center">
+                  <Typography variant="h4">Miễn phí</Typography>
+                </Stack>
+              )}
             </Stack>
 
-            <Typography variant="h2">
+            {/* <Typography variant="h2">
               <HeartIcon />
-            </Typography>
+            </Typography> */}
           </Stack>
           {!edit && (
             <Button
@@ -160,7 +191,7 @@ const CourseDetailCard = ({
                 });
               }}
             >
-              Xem chi tiết
+              {isMyCourse ? 'Vào học' : 'Xem chi tiết'}
             </Button>
           )}
           {edit && (
@@ -235,4 +266,5 @@ type CourseDetailCardProps = {
   setShowConfirmDelete?: any;
   setCount?: any;
   edit?: boolean;
+  isMyCourse?: boolean;
 };

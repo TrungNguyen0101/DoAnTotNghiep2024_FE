@@ -230,7 +230,8 @@ export default function SignUp() {
     } catch (error) {
       enqueueSnackbar({
         message: 'Đăng ký thất bại! Email đã tồn tại trong hệ thống',
-        variant: 'error'
+        variant: 'error',
+        autoHideDuration: 3000
       });
     }
   };

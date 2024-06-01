@@ -32,6 +32,7 @@ const DetailTutor = () => {
 
   const [value, setValue] = useState(3);
   const [tutor, setTutor] = useState(null);
+  console.log('DetailTutor ~ tutor:', tutor);
   const [course, setCourse] = useState([]);
   const [availableDay, setAvailableDay] = useState(null);
   const [highlightedDays, setHighlightedDays] = useState([]);
@@ -190,7 +191,7 @@ const DetailTutor = () => {
           </Stack>
         </Box>
 
-        <Stack minWidth={250} spacing={1}>
+        {/* <Stack minWidth={250} spacing={1}>
           <Button
             sx={{ border: '2px solid #121117' }}
             startIcon={<TryTutorIcon />}
@@ -198,11 +199,11 @@ const DetailTutor = () => {
           >
             Đặt lịch học thử
           </Button>
-        </Stack>
+        </Stack> */}
       </Stack>
 
-      <Divider sx={{ mt: 2 }} />
-      <Stack mt={2} width="70%" gap="8px">
+      {/* <Divider sx={{ mt: 2 }} /> */}
+      {/* <Stack mt={2} width="70%" gap="8px">
         <Typography variant="h3">Thời gian rảnh trong tuần</Typography>
         <Stack direction="row" spacing={6}>
           <DateCalendarValue
@@ -233,7 +234,7 @@ const DetailTutor = () => {
             </Stack>
           </Stack>
         </Stack>
-      </Stack>
+      </Stack> */}
 
       <Divider sx={{ mt: 2 }} />
 
@@ -260,7 +261,7 @@ const DetailTutor = () => {
         ))}
       </Grid>
 
-      <Stack>
+      {/* <Stack>
         <h3>Thông tin kinh nghiệm</h3>
         <Stack>
           {tutor?.tutor_experiences?.map((x) => (
@@ -284,7 +285,7 @@ const DetailTutor = () => {
             </Box>
           ))}
         </Stack>
-      </Stack>
+      </Stack> */}
 
       <Stack>
         <h3>Thông tin học vấn</h3>
@@ -301,7 +302,7 @@ const DetailTutor = () => {
                 </Typography>
                 <Box marginLeft={3}>
                   <Typography variant="h4">
-                    {x?.school_name || 'THPT Duy Tân'}
+                    {x?.school || 'THPT Duy Tân'}
                   </Typography>
 
                   <Typography variant="subtitle2">{x?.score_url}</Typography>
@@ -318,9 +319,9 @@ const DetailTutor = () => {
         </Stack>
       </Stack>
 
-      <Divider sx={{ mt: 2 }} />
+      {/* <Divider sx={{ mt: 2 }} /> */}
 
-      <Stack>
+      {/* <Stack>
         <h3>Thông tin chứng chỉ</h3>
         <Stack>
           {tutor?.tutor_certifications?.map((x) => (
@@ -343,9 +344,9 @@ const DetailTutor = () => {
             </Box>
           ))}
         </Stack>
-      </Stack>
-      <Divider sx={{ mt: 2 }} />
-      <Stack mt={2} gap="8px">
+      </Stack> */}
+      {/* <Divider sx={{ mt: 2 }} /> */}
+      {/* <Stack mt={2} gap="8px">
         <Typography variant="h3">Tổng đánh giá gia sư</Typography>
 
         <Stack flexDirection="row" alignItems="center" gap="8px">
@@ -359,15 +360,15 @@ const DetailTutor = () => {
             value={rate}
           />
         </Stack>
-      </Stack>
+      </Stack> */}
       {/* <Pagination showQuickJumper defaultCurrent={2} total={500} onChange={onChange} /> */}
-      <UserCommentSection id={id} />
+      {/* <UserCommentSection id={id} />
       <Snackbar
         open={open}
         autoHideDuration={3000}
         onClose={handleClose}
         message="Bạn cần đăng nhập để đánh giá và bình luận"
-      />
+      /> */}
     </Container>
   );
 };
