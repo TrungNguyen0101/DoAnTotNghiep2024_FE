@@ -11,17 +11,44 @@ import api from '@/api';
 import Image from 'next/image';
 import ModalShowInfo from '@/components/management/tutor/ModalShowInfo';
 import { FileCopyOutlined } from '@mui/icons-material';
-
+import CheckIcon from '@mui/icons-material/Check';
+import ClearIcon from '@mui/icons-material/Clear';
+import { enqueueSnackbar } from 'notistack';
 function TutorProfile() {
   const [data, setData] = useState([]);
+  console.log('TutorProfile ~ data:', data);
   const [showFormDetail, setShowFormDetail] = useState(false);
   const [showConfirmDelete, setShowConfirmDelete] = useState(false);
   const [dataSelected, setDataSelected] = useState<any>();
 
+  const fetchData = () => {
+    api.get('tutor').then((res) => {
+      setData([...res?.data?.data]);
+      console.log('123');
+    });
+  };
+
   useEffect(() => {
     fetchData();
-    console.log(data);
   }, []);
+
+  const handleApproveTutor = async (id, payload) => {
+    const res = await api.put(`/tutor/${id}`, payload);
+    if (res?.status === 200) {
+      fetchData();
+      enqueueSnackbar({
+        message: 'Thao tác thành công',
+        variant: 'success',
+        autoHideDuration: 1500
+      });
+    } else {
+      enqueueSnackbar({
+        message: 'Thao tác thất bại',
+        variant: 'error',
+        autoHideDuration: 1500
+      });
+    }
+  };
 
   const columns: ProColumns<any>[] = [
     {
@@ -47,7 +74,7 @@ function TutorProfile() {
       fixed: 'left',
       render: (_, row) => (
         <p>
-          {row.user?.first_name} {row.user?.last_name}
+          {row.user?.last_name} {row.user?.first_name}
         </p>
       )
     },
@@ -71,7 +98,9 @@ function TutorProfile() {
       title: 'Môn dạy',
       width: 100,
       fixed: 'left',
-      render: (_, row) => <p>{row.tutor_educations[0]?.favorite_subject}</p>
+      render: (_, row) => (
+        <p>{row.tutor_educations[0]?.favorite_subject || 'chưa có'}</p>
+      )
     },
     {
       title: 'Email',
@@ -81,7 +110,7 @@ function TutorProfile() {
     },
     {
       title: 'Điện thoại',
-      width: 200,
+      width: 150,
       fixed: 'left',
       render: (_, row) => <p>{row.user?.phone_number}</p>
     },
@@ -89,17 +118,38 @@ function TutorProfile() {
       title: 'Trạng thái',
       width: 100,
       fixed: 'left',
-      render: (_, row) =>
-        row.user?.file_cv ? (
-          <a href={row.user?.file_cv} target="_blank" rel="noopener noreferrer">
-            <div style={{ display: 'flex', alignItems: 'center' }}>
-              <FileCopyOutlined />
-              <p>Thông tin</p>
-            </div>
-          </a>
+      render: (_, row) => {
+        console.log('TutorProfile ~ row:', row);
+        return !!row.approve ? (
+          <>{row.check_approve ? <p>Đã được duyệt</p> : <p>Đã từ chối</p>}</>
         ) : (
-          <FileCopyOutlined />
-        )
+          <div
+            style={{
+              display: 'flex',
+              gap: '15px'
+            }}
+          >
+            <CheckIcon
+              style={{ cursor: 'pointer' }}
+              onClick={() => {
+                handleApproveTutor(row?.tutor_profile_id, {
+                  check_approve: true,
+                  approve: true
+                });
+              }}
+            />
+            <ClearIcon
+              style={{ cursor: 'pointer' }}
+              onClick={() => {
+                handleApproveTutor(row?.tutor_profile_id, {
+                  check_approve: false,
+                  approve: true
+                });
+              }}
+            />
+          </div>
+        );
+      }
     },
     {
       width: 60,
@@ -126,12 +176,6 @@ function TutorProfile() {
       )
     }
   ];
-
-  const fetchData = () => {
-    api.get('tutor').then((res) => {
-      setData([...res?.data?.data]);
-    });
-  };
 
   const handleDelete = () => {
     const tutor_id = dataSelected.tutor_profile_id;

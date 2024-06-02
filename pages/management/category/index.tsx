@@ -10,6 +10,7 @@ import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import EditIcon from '@mui/icons-material/Edit';
 import ConfirmDeleteModal from '@/components/base/modal/ConfirmDeleteModal';
 import api from '@/api';
+import Image from 'next/image';
 
 function ApplicationsTransactions() {
   const [data, setData] = useState([]);
@@ -35,18 +36,12 @@ function ApplicationsTransactions() {
       }
     },
     {
-      width: 150,
+      width: 100,
       title: 'Hình ảnh',
       dataIndex: 'image_url',
       fixed: 'left',
       render: (dom: any) => {
-        return (
-          <img
-            src={dom}
-            alt="Uploaded"
-            style={{ maxWidth: '100%', marginTop: '10px' }}
-          />
-        );
+        return <Image src={dom} width="80px" height="60px" />;
       }
     },
     {

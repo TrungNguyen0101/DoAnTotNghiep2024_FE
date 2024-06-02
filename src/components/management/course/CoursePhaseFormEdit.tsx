@@ -49,7 +49,8 @@ function CoursePhaseFormEdit({ isOpen, onClose, data, setCount }) {
     if (res.status === 200) {
       enqueueSnackbar({
         message: 'Sửa chương thành công',
-        variant: 'success'
+        variant: 'success',
+        autoHideDuration: 1500
       });
       setCount((prev) => prev + 1);
       onClose();

@@ -12,7 +12,7 @@ import {
 import { useEffect, useState } from 'react';
 
 const TutorDetailCard = ({ data }: TutorDetailCardProps) => {
-  console.log('TutorDetailCard ~ data:', data?.user?.avatar_url);
+  console.log('TutorDetailCard ~ data:', data);
   const router = useRouter();
   const [certificate, setCertificates] = useState([]);
 
@@ -61,7 +61,8 @@ const TutorDetailCard = ({ data }: TutorDetailCardProps) => {
                 alignItems="center"
                 gap="8px"
               >
-                <LangueTeachIcon /> {data?.tutor_educations?.subjects}
+                <LangueTeachIcon />{' '}
+                {data?.tutor_educations[0]?.favorite_subject}
               </Typography>
             </Stack>
             <Stack>

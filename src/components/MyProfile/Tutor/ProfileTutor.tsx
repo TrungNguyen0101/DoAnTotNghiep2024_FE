@@ -52,7 +52,6 @@ function ProfileTutor() {
   // const [school, setSchool] = useState<any>([]);
   const [user, setUser] = useState<any>();
   const [tutorInfo, setTutorInfo] = useState(null);
-  console.log('ProfileTutor ~ tutorInfo:', tutorInfo);
   const [userId, setUserId] = useState(null);
   const router = useRouter();
 
@@ -132,9 +131,8 @@ function ProfileTutor() {
           {/* {Boolean(tutorInfo?.tutor_profile_id) === true && (
             <Tab label="Thời gian dạy" />
           )} */}
-          {Boolean(tutorInfo?.tutor_profile_id) === true && (
-            <Tab label="Khóa học" />
-          )}
+          {Boolean(tutorInfo?.tutor_profile_id) === true &&
+            tutorInfo?.check_approve && <Tab label="Khóa học" />}
         </Tabs>
       </Box>
       {/* thông tin tài khoản */}

@@ -53,7 +53,8 @@ function CourseManage() {
       width: 150,
       title: 'Hình ảnh',
       render: (_, row) => {
-        return row?.image_url ? (
+        console.log('CourseManage ~ row:', row);
+        return row?.image_url !== 'null' ? (
           <Image
             width={100}
             height={60}

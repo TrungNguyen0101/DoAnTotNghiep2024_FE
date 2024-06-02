@@ -133,6 +133,8 @@ export default function SignUp() {
 
   // const [selectedFiles, setSelectedFiles] = useState<File | null>(null);
   const [selectAvartar, setSelectedAvartar] = useState<File | null>(null);
+  const [selectedImageUrl, setSelectedImagUrl] = useState<any>(null);
+
   // const handleFileChange = async (
   //   events: React.ChangeEvent<HTMLInputElement>
   // ) => {
@@ -148,6 +150,8 @@ export default function SignUp() {
   ) => {
     const filelist = events.target.files;
     if (filelist) {
+      const imageUrl = URL.createObjectURL(filelist[0]);
+      setSelectedImagUrl(imageUrl);
       setSelectedAvartar(filelist[0]);
     }
   };
@@ -398,7 +402,7 @@ export default function SignUp() {
             </Button>
           )} */}
 
-          {isTutor && (
+          {/* {isTutor && (
             <Button
               component="label"
               variant="contained"
@@ -415,6 +419,45 @@ export default function SignUp() {
                 style={{ display: 'none' }}
               />
             </Button>
+          )} */}
+          {isTutor && (
+            <>
+              {selectedImageUrl ? (
+                <div>
+                  <img
+                    src={selectedImageUrl}
+                    alt="Uploaded"
+                    style={{ maxWidth: '100%', marginTop: '10px' }}
+                  />
+                  <Button
+                    component="label"
+                    variant="contained"
+                    onClick={() => {
+                      setSelectedImagUrl('');
+                    }}
+                  >
+                    Delete Image
+                  </Button>
+                </div>
+              ) : (
+                <Button
+                  component="label"
+                  variant="contained"
+                  startIcon={<CloudUpload />}
+                  style={{ marginLeft: '10px' }}
+                >
+                  Upload Avartar
+                  <input
+                    type="file"
+                    name="avatar_url"
+                    onChange={(e) => {
+                      handleAvartarChange(e);
+                    }}
+                    style={{ display: 'none' }}
+                  />
+                </Button>
+              )}
+            </>
           )}
 
           <Button

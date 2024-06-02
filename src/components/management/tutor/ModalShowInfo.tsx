@@ -214,7 +214,7 @@ const ModalShowInfo: React.FC<IModalManage> = ({
               </Box>
               <Box>
                 <Typography fontSize={16} color={'#6F7787FF'} fontWeight={500}>
-                  {subject}
+                  {subject || 'chưa có'}
                 </Typography>
               </Box>
             </Box>
