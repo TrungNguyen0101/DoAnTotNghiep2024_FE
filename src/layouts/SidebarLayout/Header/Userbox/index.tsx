@@ -61,16 +61,11 @@ const UserBoxDescription = styled(Typography)(
 `
 );
 
-
 function HeaderUserbox() {
   const router = useRouter();
 
   const ref = useRef<any>(null);
   const [isOpen, setOpen] = useState<boolean>(false);
-
-
-  
-
 
   const handleOpen = (): void => {
     setOpen(true);
@@ -80,40 +75,36 @@ function HeaderUserbox() {
     setOpen(false);
   };
 
-
-
   const [user, setUser] = useState({
-    name: "",
-    jobtitle: "",
-    avatar: "",
-  })
+    name: '',
+    jobtitle: '',
+    avatar: ''
+  });
 
   const fetchData = async () => {
     const data = localStorage.getItem('access_token');
     const decoddeToken: any = jwtDecode(data);
-    if(decoddeToken != null) {
-      const user_id = decoddeToken["user_id"];
-      const res = await api.get(`/user/get-user-info/${user_id}`)
-      if(res!= null) {
+    if (decoddeToken != null) {
+      const user_id = decoddeToken['user_id'];
+      const res = await api.get(`/user/get-user-info/${user_id}`);
+      if (res != null) {
         setUser({
           name: res.data?.data.last_name,
-          jobtitle: "",
-          avatar: "",
+          jobtitle: '',
+          avatar: ''
         });
-        
       }
     }
-  }
+  };
 
   const handleLogout = () => {
     localStorage.setItem('access_token', '');
     router.push('/auth/login');
   };
 
-
   useEffect(() => {
-    fetchData()
-  }, [])
+    fetchData();
+  }, []);
   return (
     <>
       <UserBoxButton color="secondary" ref={ref} onClick={handleOpen}>
@@ -153,14 +144,14 @@ function HeaderUserbox() {
           </UserBoxText>
         </MenuUserBox>
         <Divider sx={{ mb: 0 }} />
-        <List sx={{ p: 1 }} component="nav">
-          <NextLink href="/management/profile" passHref>
+        {/* <List sx={{ p: 1 }} component="nav"> */}
+        {/* <NextLink href="/management/profile" passHref>
             <ListItem button>
               <AccountBoxTwoToneIcon fontSize="small" />
               <ListItemText primary="My Profile" />
             </ListItem>
-          </NextLink>
-          {/* <NextLink href="/applications/messenger" passHref>
+          </NextLink> */}
+        {/* <NextLink href="/applications/messenger" passHref>
             <ListItem button>
               <InboxTwoToneIcon fontSize="small" />
               <ListItemText primary="Messenger" />
@@ -172,7 +163,7 @@ function HeaderUserbox() {
               <ListItemText primary="Account Settings" />
             </ListItem>
           </NextLink> */}
-        </List>
+        {/* </List> */}
         <Divider />
         <Box sx={{ m: 1 }}>
           <Button color="primary" fullWidth onClick={handleLogout}>

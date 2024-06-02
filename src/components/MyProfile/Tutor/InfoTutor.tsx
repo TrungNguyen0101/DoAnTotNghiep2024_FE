@@ -77,7 +77,12 @@ const InfoTutor = ({ data }) => {
             }
           }}
         /> */}
-        <ControlTextField control={control} name="balance" label="Số dư" />
+        <ControlTextField
+          preventInput={true}
+          control={control}
+          name="balance"
+          label="Số dư"
+        />
         <ControlTextField
           control={control}
           name="description"

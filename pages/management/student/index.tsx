@@ -15,6 +15,7 @@ function StudentProfile() {
   const [data, setData] = useState([]);
   const [showConfirmDelete, setShowConfirmDelete] = useState(false);
   const [dataSelected, setDataSelected] = useState<any>();
+  console.log('StudentProfile ~ dataSelected:', dataSelected);
   const [showFormDetail, setShowFormDetail] = useState(false);
 
   useEffect(() => {
@@ -55,7 +56,12 @@ function StudentProfile() {
       fixed: 'left',
       render: (_, row) =>
         row.user?.avatar_url ? (
-          <Image width={50} height={50} src={row.user?.avatar_url}></Image>
+          <Image
+            width={80}
+            height={60}
+            src={row.user?.avatar_url}
+            objectFit="cover"
+          ></Image>
         ) : (
           <Avatar></Avatar>
         )
@@ -146,7 +152,7 @@ function StudentProfile() {
         firstName={dataSelected?.user?.first_name}
         lastName={dataSelected?.user?.last_name}
         avatar={dataSelected?.user?.avatar_url}
-        school={dataSelected?.student_educations?.[0]?.school?.name}
+        school={dataSelected?.student_educations?.[0]?.school}
         startSchool={dataSelected?.student_educations?.[0]?.from_year}
         endSchool={dataSelected?.student_educations?.[0]?.to_year}
         gender={dataSelected?.user?.gender}

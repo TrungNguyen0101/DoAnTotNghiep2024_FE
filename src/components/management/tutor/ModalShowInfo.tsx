@@ -26,7 +26,7 @@ interface IModalManage {
   email: string;
   avatar: string;
   description: string;
-  company: string;
+  company?: string;
   subject: string;
 }
 
@@ -87,9 +87,11 @@ const ModalShowInfo: React.FC<IModalManage> = ({
               fontSize={20}
               color={'#459D7AFF'}
               fontWeight={500}
-              sx={{
-                margin: '50px 0 20px 0'
-              }}
+              sx={
+                {
+                  // margin: '50px 0 20px 0'
+                }
+              }
             >
               Thông tin
             </Typography>
@@ -121,19 +123,31 @@ const ModalShowInfo: React.FC<IModalManage> = ({
             )}
             <Box sx={style.converseText}>
               <Box display="flex" alignItems="center">
-                <Typography
+                {/* <Typography
                   marginLeft={'5px'}
                   fontSize={16}
                   color={'#6F7787FF'}
                   fontWeight={500}
                 >
                   Giới thiệu
-                </Typography>
-              </Box>
-              <Box>
-                <Typography fontSize={16} color={'#6F7787FF'} fontWeight={500}>
-                  {description}
-                </Typography>
+                </Typography> */}
+                <Box>
+                  <Typography
+                    fontSize={20}
+                    color={'#0EAA42FF'}
+                    fontWeight={500}
+                  >
+                    Giới thiệu
+                  </Typography>
+                  <Typography
+                    fontSize={16}
+                    marginLeft={'5px'}
+                    color={'#6F7787FF'}
+                    fontWeight={500}
+                  >
+                    {description}
+                  </Typography>
+                </Box>
               </Box>
             </Box>
             <Box sx={style.converseText}>
@@ -170,8 +184,8 @@ const ModalShowInfo: React.FC<IModalManage> = ({
                 </Typography>
               </Box>
             </Box>
-            <Box sx={style.converseText}>
-              <Box display="flex" alignItems="center">
+            {/* <Box sx={style.converseText}> */}
+            {/* <Box display="flex" alignItems="center">
                 <Typography
                   marginLeft={'5px'}
                   fontSize={16}
@@ -180,13 +194,13 @@ const ModalShowInfo: React.FC<IModalManage> = ({
                 >
                   Kinh nghiệm làm việc
                 </Typography>
-              </Box>
-              <Box>
+              </Box> */}
+            {/* <Box>
                 <Typography fontSize={16} color={'#6F7787FF'} fontWeight={500}>
                   {company}
                 </Typography>
-              </Box>
-            </Box>
+              </Box> */}
+            {/* </Box> */}
             <Box sx={style.converseText}>
               <Box display="flex" alignItems="center">
                 <Typography
@@ -218,7 +232,8 @@ const style: IStyleProps = {
     display: 'flex',
     justifyContent: 'space-between',
     alignItems: 'center',
-    margin: '10px 0'
+    margin: '10px 0',
+    paddingBottom: '10px'
   },
 
   flex: {
@@ -251,7 +266,7 @@ const style: IStyleProps = {
 
   contentBottom: {
     width: '441px',
-    height: 'calc(100% - 120px)',
+    height: 'calc(100% - 145px)',
     margin: '20px auto',
     display: 'flex',
     alignItems: 'flex-start'

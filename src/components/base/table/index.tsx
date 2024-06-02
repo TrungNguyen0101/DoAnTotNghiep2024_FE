@@ -61,17 +61,12 @@ function MyTable({
         columns={columns}
         pagination={{
           total: data.length,
-          pageSize: 10,
-          pageSizeOptions: [10, 20, 50],
-          showSizeChanger: true,
+          pageSize: 5,
+          pageSizeOptions: [5, 10, 15],
+          // showSizeChanger: true,
           responsive: true,
-          locale: { items_per_page: '' },
-          // locale: {
-          // emptyText: 'Không có dữ liệu'
-          // },
-          showTotal: (total, range) => (
-            <div>{`${range[0]}-${range[1]} của ${total} items`}</div>
-          )
+          // locale: { items_per_page: '' },
+          showTotal: (total, range) => <div></div>
         }}
         options={{
           reload: false,

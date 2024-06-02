@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "skipLibCheck": true,
     "strict": false,
     "noUnusedLocals": false,
     "noUnusedParameters": false,
@@ -17,7 +18,6 @@
     "noEmit": true,
     "preserveConstEnums": true,
     "removeComments": false,
-    "skipLibCheck": true,
     "sourceMap": true,
     "strictPropertyInitialization": false,
     "strictNullChecks": false,

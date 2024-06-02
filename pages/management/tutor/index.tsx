@@ -57,7 +57,12 @@ function TutorProfile() {
       fixed: 'left',
       render: (_, row) =>
         row.user?.avatar_url ? (
-          <Image width={50} height={50} src={row.user?.avatar_url}></Image>
+          <Image
+            width={80}
+            height={60}
+            src={row.user?.avatar_url}
+            objectFit="cover"
+          ></Image>
         ) : (
           <Avatar></Avatar>
         )
@@ -75,13 +80,13 @@ function TutorProfile() {
       render: (_, row) => <p>{row.user?.email}</p>
     },
     {
-      title: 'Sđt',
+      title: 'Điện thoại',
       width: 200,
       fixed: 'left',
       render: (_, row) => <p>{row.user?.phone_number}</p>
     },
     {
-      title: 'Cv cá nhân',
+      title: 'Trạng thái',
       width: 100,
       fixed: 'left',
       render: (_, row) =>
@@ -173,7 +178,7 @@ function TutorProfile() {
         gender={dataSelected?.user?.gender}
         phone={dataSelected?.user?.phone_number}
         email={dataSelected?.user?.email}
-        company={dataSelected?.tutor_experiences[0]?.organization}
+        // company={dataSelected?.tutor_experiences[0]?.organization}
         subject={dataSelected?.tutor_educations[0]?.favorite_subject}
         setOpen={setShowFormDetail}
         open={showFormDetail}

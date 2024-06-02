@@ -17,7 +17,6 @@ export type FormDataHaha = {
   last_name: string;
   first_name: string;
   email: string;
-  password: string;
   phone_number: string;
   gender: string;
   balance: string;
@@ -57,47 +56,48 @@ function ProfileTutor() {
   const [userId, setUserId] = useState(null);
   const router = useRouter();
 
-  useEffect(() => {
-    const getInfoUser = async () => {
-      const token = localStorage?.getItem('access_token');
-      if (token) {
-        const decoded = jwtDecode<any>(token);
-        setUserId(decoded?.user_id);
-        try {
-          const res = await api.get(`/user/get-user-info/${decoded?.user_id}`);
-          // const resSchool = await api.get('/school');
-          console.log('getInfoUser ~ res:', res);
+  const getInfoUser = async () => {
+    const token = localStorage?.getItem('access_token');
+    if (token) {
+      const decoded = jwtDecode<any>(token);
+      setUserId(decoded?.user_id);
+      try {
+        const res = await api.get(`/user/get-user-info/${decoded?.user_id}`);
+        // const resSchool = await api.get('/school');
+        console.log('getInfoUser ~ res:', res);
 
-          // setSchool(
-          //   resSchool.data.data.map((item) => {
-          //     return { name: item.name, id: item.school_id };
-          //   })
-          // );
+        // setSchool(
+        //   resSchool.data.data.map((item) => {
+        //     return { name: item.name, id: item.school_id };
+        //   })
+        // );
 
-          if (res.status === 200) {
-            setUser(res.data.data);
-            const user = res.data.data;
-            const tutor_profile = res.data.data.tutor_profiles[0];
-            const student_profile = res.data.data.student_profile;
+        if (res.status === 200) {
+          setUser(res.data.data);
+          const user = res.data.data;
+          const tutor_profile = res.data.data.tutor_profiles[0];
+          const student_profile = res.data.data.student_profile;
 
-            // tutor
-            if (user.role_id === ROLE_TEACHER_ID) {
-              setTutorInfo(tutor_profile);
-              console.log(tutor_profile);
-            } else if (user.role_id === ROLE_STUDENT_ID) {
-              setTutorInfo(student_profile);
-            }
+          // tutor
+          if (user.role_id === ROLE_TEACHER_ID) {
+            setTutorInfo(tutor_profile);
+            console.log(tutor_profile);
+          } else if (user.role_id === ROLE_STUDENT_ID) {
+            setTutorInfo(student_profile);
           }
-        } catch (error) {}
-      } else {
-        router.push('/auth/login');
-      }
-    };
+        }
+      } catch (error) {}
+    } else {
+      router.push('/auth/login');
+    }
+  };
+  useEffect(() => {
     getInfoUser();
   }, []);
 
   const handleChange = (_, value) => {
     setTab(value);
+    getInfoUser();
   };
 
   function CustomTabPanel(props: any) {
@@ -123,9 +123,9 @@ function ProfileTutor() {
           aria-label="basic tabs example"
         >
           <Tab label="Thông tin tài khoản" />
-          {/* {Boolean(tutorInfo?.tutor_profile_id) === true && (
+          {Boolean(tutorInfo?.tutor_profile_id) === true && (
             <Tab label="Thông tin gia sư" />
-          )} */}
+          )}
           {/* {Boolean(tutorInfo?.tutor_profile_id) === true && ( */}
           <Tab label="Học vấn" />
           {/* )} */}
@@ -137,7 +137,6 @@ function ProfileTutor() {
           )}
         </Tabs>
       </Box>
-
       {/* thông tin tài khoản */}
       <CustomTabPanel index={0}>
         <Card
@@ -152,23 +151,25 @@ function ProfileTutor() {
           <InfoUser data={user} id={userId} />
         </Card>
       </CustomTabPanel>
-
       {/* thông tin gia sư */}
-      {/* <CustomTabPanel index={1}>
-        <Card
-          sx={{
-            background: 'white',
-            py: '1rem',
-            boxShadow: 'rgba(100, 100, 111, 0.2) 0px 7px 29px 0px',
-            px: '3rem'
-          }}
-        >
-          <InfoTutor data={tutorInfo} />
-        </Card>
-      </CustomTabPanel> */}
-
+      {Boolean(tutorInfo?.tutor_profile_id) === true && (
+        <CustomTabPanel index={1}>
+          <Card
+            sx={{
+              background: 'white',
+              py: '1rem',
+              boxShadow: 'rgba(100, 100, 111, 0.2) 0px 7px 29px 0px',
+              px: '3rem'
+            }}
+          >
+            <InfoTutor data={tutorInfo} />
+          </Card>
+        </CustomTabPanel>
+      )}
       {/* thông tin kinh nghiệm */}
-      <CustomTabPanel index={1}>
+      <CustomTabPanel
+        index={Boolean(tutorInfo?.tutor_profile_id) === true ? 2 : 1}
+      >
         {/* <Card
           sx={{
             background: 'white',
@@ -209,12 +210,10 @@ function ProfileTutor() {
           <CerInfo data={tutorInfo} />
         </Card> */}
       </CustomTabPanel>
-
       {/* <CustomTabPanel index={3}>
         <TutorAvailableDate userId={user?.user_id} />
       </CustomTabPanel> */}
-
-      <CustomTabPanel index={2}>
+      <CustomTabPanel index={3}>
         <Card
           sx={{
             background: 'white',

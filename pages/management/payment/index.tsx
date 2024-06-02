@@ -29,12 +29,12 @@ function Payment() {
   }, []);
 
   const columns: ProColumns<any>[] = [
-    {
-      width: 15,
-      fixed: 'left',
-      align: 'center',
-      render: (_) => <Checkbox size="small" />
-    },
+    // {
+    //   width: 15,
+    //   fixed: 'left',
+    //   align: 'center',
+    //   render: (_) => <Checkbox size="small" />
+    // },
     {
       title: 'Khóa học',
       dataIndex: 'name',
@@ -124,7 +124,7 @@ function Payment() {
       <Container
         maxWidth="lg"
         sx={{
-          mt: 3
+          mt: 4
         }}
       >
         <Grid
@@ -136,7 +136,7 @@ function Payment() {
         >
           <Grid item xs={12}>
             <MyTable
-              title={'Danh sách mua khóa học'}
+              title={'Danh sách lịch sử giao dịch'}
               rowKey="booked-session_id"
               dataRows={data}
               columns={columns}

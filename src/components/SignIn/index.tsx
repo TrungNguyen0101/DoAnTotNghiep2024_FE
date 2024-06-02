@@ -78,18 +78,20 @@ export default function SignIn() {
         ) {
           router.push(ROOT_PATH);
         } else if (response.data.data.role_id === ROLE_ADMIN_ID) {
-          router.push('/management/category');
+          router.push('/management/revenue');
         }
       } else {
         enqueueSnackbar({
           message: 'Đăng nhập thất bại!',
-          variant: 'error'
+          variant: 'error',
+          autoHideDuration: 1500
         });
       }
     } catch (error) {
       enqueueSnackbar({
         message: 'Đăng nhập thất bại!',
-        variant: 'error'
+        variant: 'error',
+        autoHideDuration: 1500
       });
     }
   };

@@ -86,14 +86,19 @@ const CourseDetail = () => {
       socket.emit('authenticate', decoded?.user_id);
 
       socket.on('receive-message', (data) => {
-        setMessages((prevMessages) => [...prevMessages, data]);
+        if (
+          data.senderId === userLoadMessage ||
+          data.senderId === decoded?.user_id
+        ) {
+          setMessages((prevMessages) => [...prevMessages, data]);
+        }
       });
 
       return () => {
         socket.off('receive-message');
       };
     }
-  }, []);
+  }, [userLoadMessage]);
 
   useEffect(() => {
     const getMessageById = async () => {
@@ -103,9 +108,12 @@ const CourseDetail = () => {
         const result = res?.data?.data;
         const listMessage = await Promise.all(
           result.map(async (item) => {
-            const res = await api.get(
-              `/user/get-user-info/${item?.receiver_id}`
-            );
+            let res: any;
+            if (item?.receiver_id === userId) {
+              res = await api.get(`/user/get-user-info/${item?.sender_id}`);
+            } else {
+              res = await api.get(`/user/get-user-info/${item?.receiver_id}`);
+            }
             const userData = res?.data?.data;
             return {
               message: item,
@@ -113,7 +121,17 @@ const CourseDetail = () => {
             };
           })
         );
-        setListUserMessage(listMessage);
+        // Create a Set to keep track of unique user_ids
+        const uniqueUserIds = new Set();
+        const filteredListMessage = listMessage.filter((item) => {
+          if (uniqueUserIds.has(item.user?.user_id)) {
+            return false; // If user_id already exists, filter out this item
+          }
+          uniqueUserIds.add(item.user?.user_id);
+          return true; // If user_id is new, keep this item
+        });
+
+        setListUserMessage(filteredListMessage);
       } catch (error) {
         console.log(error);
       }
@@ -138,22 +156,22 @@ const CourseDetail = () => {
   }, [course]);
 
   const getMessageByUser = async (receiver_id: any) => {
+    setReceiverId(receiver_id);
     try {
       const res = await api.get(
         `/message?sender_id=${userId}&receiver_id=${receiver_id}`
       );
       const result = res?.data?.data;
-      // console.log('getMessageByUser ~ result:', result);
       const filteredResult = result.map(({ message, sender_id }) => ({
         message,
         senderId: sender_id
       }));
-      // console.log('filteredResult ~ filteredResult:', filteredResult);
-      setReceiverId(receiver_id);
       setMessages(filteredResult);
       setIsLoadMessage(true);
       setShowChat(true);
     } catch (error) {
+      setIsLoadMessage(true);
+      setShowChat(true);
       console.log(error);
     }
   };
@@ -171,10 +189,6 @@ const CourseDetail = () => {
     setMessage('');
     if (elementRef.current) {
       console.log(elementRef.current.scrollHeight);
-      // elementRef.current.scrollTo({
-      //   top: elementRef.current.scrollHeight,
-      //   behavior: 'smooth'
-      // });
       elementRef.current.scrollIntoView({ behavior: 'smooth', block: 'end' });
     }
   };

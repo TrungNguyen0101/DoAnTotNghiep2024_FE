@@ -13,7 +13,6 @@ const PhaseCourse = ({
   isCourse,
   course
 }) => {
-  console.log('course:', course);
   const [openPhaseEdit, setOpenPhaseEdit] = useState(false);
   const [youtubeId, setYoutubeId] = useState('');
 

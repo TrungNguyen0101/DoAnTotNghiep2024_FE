@@ -15,6 +15,10 @@
         "maximum": 2,
         "when": "multiline"
       }
-    ]
+    ],
+    // Thêm quy tắc dưới đây để tắt kiểm tra kiểu cho JSX
+    "react/jsx-filename-extension": [1, { "extensions": [".tsx", ".ts"] }],
+    "react/jsx-props-no-spreading": "off",
+    "@typescript-eslint/explicit-module-boundary-types": "off"
   }
 }

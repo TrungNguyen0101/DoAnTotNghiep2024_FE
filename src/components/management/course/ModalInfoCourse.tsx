@@ -22,7 +22,7 @@ interface IModalManage {
   name: string;
   avatar: string;
   description: string;
-  price?: number;
+  price?: any;
   ratting: number;
   tutor: string;
   spendTime: number;
@@ -86,7 +86,7 @@ const ModalShowInfo: React.FC<IModalManage> = ({
                     Học Phí
                   </Typography>
                 </Box>
-                <Box>{price}/buổi</Box>
+                <Box>{price !== 'undefined' ? price + 'VNĐ' : 'Miễn phí'}</Box>
               </Box>
             )}
             <Box sx={style.converseText}>
@@ -141,7 +141,7 @@ const ModalShowInfo: React.FC<IModalManage> = ({
                 </Typography>
               </Box>
             </Box>
-            <Box sx={style.converseText}>
+            {/* <Box sx={style.converseText}>
               <Box display="flex" alignItems="center">
                 <Typography
                   marginLeft={'5px'}
@@ -157,7 +157,7 @@ const ModalShowInfo: React.FC<IModalManage> = ({
                   {spendTime} buổi
                 </Typography>
               </Box>
-            </Box>
+            </Box> */}
           </Stack>
         </Stack>
       </Stack>

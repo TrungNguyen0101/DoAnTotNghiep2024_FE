@@ -52,19 +52,27 @@ function CourseManage() {
     {
       width: 150,
       title: 'Hình ảnh',
-      render: (_, row) =>
-        row.user?.avatar_url ? (
-          <Image width={50} height={50} src={row.user?.avatar_url}></Image>
+      render: (_, row) => {
+        return row?.image_url ? (
+          <Image
+            width={100}
+            height={60}
+            src={row?.image_url}
+            objectFit="cover"
+          ></Image>
         ) : (
           <></>
-        ),
+        );
+      },
       fixed: 'left'
     },
     {
       title: 'Học phí',
-      width: 200,
+      width: 150,
       fixed: 'left',
-      render: (_, row) => <p>{row.price}</p>
+      render: (_, row) => {
+        return <p>{row.price !== 'undefined' ? row.price : 'Miễn phí'}</p>;
+      }
     },
     {
       title: 'Mô tả',
@@ -73,7 +81,7 @@ function CourseManage() {
       render: (_, row) => <p>{row.description}</p>
     },
     {
-      title: 'Người học',
+      title: 'Môn học',
       width: 200,
       fixed: 'left',
       render: (_, row) => <p>{row.category?.name}</p>
@@ -144,7 +152,7 @@ function CourseManage() {
         >
           <Grid item xs={12}>
             <MyTable
-              title={'Danh sách gia sư'}
+              title={'Danh sách khóa học'}
               rowKey="tutor_profile_id"
               dataRows={data}
               columns={columns}

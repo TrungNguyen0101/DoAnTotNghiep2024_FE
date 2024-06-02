@@ -255,6 +255,21 @@ function SidebarMenu() {
         >
           <SubMenuWrapper>
             <List component="div">
+              <ListItem>
+                <NextLink href="/management/revenue" passHref>
+                  <Button
+                    className={
+                      currentRoute === '/management/revenue' ? 'active' : ''
+                    }
+                    component="a"
+                    disableRipple
+                    onClick={closeSidebar}
+                    startIcon={<TableChartTwoToneIcon />}
+                  >
+                    Thống kê
+                  </Button>
+                </NextLink>
+              </ListItem>
               <ListItem component="div">
                 <NextLink href="/management/category" passHref>
                   <Button
@@ -319,7 +334,7 @@ function SidebarMenu() {
                 </NextLink>
               </ListItem>
 
-              <ListItem component="div">
+              {/* <ListItem component="div">
                 <NextLink href="/management/school" passHref>
                   <Button
                     className={
@@ -333,9 +348,9 @@ function SidebarMenu() {
                     Trường học
                   </Button>
                 </NextLink>
-              </ListItem>
+              </ListItem> */}
 
-              <ListItem component="div">
+              {/* <ListItem component="div">
                 <NextLink href="/management/feedback" passHref>
                   <Button
                     className={
@@ -349,7 +364,7 @@ function SidebarMenu() {
                     Đánh giá
                   </Button>
                 </NextLink>
-              </ListItem>
+              </ListItem> */}
               <ListItem component="div">
                 <NextLink href="/management/payment" passHref>
                   <Button
@@ -361,23 +376,8 @@ function SidebarMenu() {
                     onClick={closeSidebar}
                     startIcon={<TableChartTwoToneIcon />}
                   >
-                    Tài chính
+                    Lịch sử giao dịch
                   </Button>
-                </NextLink>
-              </ListItem>
-
-
-
-              <ListItem>
-                <NextLink href="/management/comment" passHref>
-                    <Button className={currentRoute === '/management/payment' ? 'active': ''}
-                    component="a"
-                    disableRipple
-                    onClick={closeSidebar}
-                    startIcon={<TableChartTwoToneIcon />}
-                    >
-                      Bình luận
-                    </Button>
                 </NextLink>
               </ListItem>
             </List>

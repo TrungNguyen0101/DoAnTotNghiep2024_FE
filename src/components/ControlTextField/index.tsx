@@ -25,6 +25,7 @@ const ControlTextField = <T extends FieldValues>({
   required = false,
   textfieldProps,
   onChangeValueForm,
+  preventInput = false, // Thuộc tính ngăn chặn nhập
   labelProps,
   ...otherProps
 }: AppFormControlTextFieldProps<T>) => {
@@ -64,6 +65,7 @@ const ControlTextField = <T extends FieldValues>({
             {...otherFieldProps}
             {...textfieldProps}
             fullWidth
+            inputProps={preventInput ? { readOnly: true } : {}}
           />
         )}
       />
@@ -82,6 +84,7 @@ export type AppFormControlTextFieldProps<T extends FieldValues> = StackProps & {
   textfieldProps?: TextFieldProps;
   onChangeValueForm?: (event?: React.ChangeEvent) => void;
   labelProps?: InputLabelProps;
+  preventInput?: boolean; // Thuộc tính ngăn chặn nhập
 };
 
 export default memo(ControlTextField);

@@ -23,7 +23,6 @@ const defaultValues = {
   last_name: '',
   first_name: '',
   email: '',
-  password: '',
   phone_number: '',
   gender: 'female'
 };
@@ -37,11 +36,11 @@ const InfoUser = ({ data, id }) => {
 
   const handleSaveInfo = async (data) => {
     try {
+      console.log('handleSaveInfo ~ data:', data);
       const res = await api.put(`/user/update-user-info/${id}`, {
         ...data,
         avatar_url: fileList[0].url
       });
-      console.log('handleSaveInfo ~ res:', res);
       if (res.status === 200) {
         enqueueSnackbar({
           message: 'Cập nhật thông tin tài khoản thành công',
