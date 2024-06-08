@@ -127,9 +127,7 @@ function CoursePhaseFormAdd({ isOpen, onClose, data, setCount }) {
       aria-describedby="alert-dialog-description"
     >
       <DialogTitle id="alert-dialog-title">
-        {data?.course_program_id
-          ? 'Chỉnh sửa chương học'
-          : 'Thêm mới chương học'}
+        {data?.course_program_id ? 'Thêm mới bài học' : 'Thêm mới chương học'}
       </DialogTitle>
       <DialogContent
         sx={{
