@@ -222,7 +222,7 @@ const CourseDetailCard = ({
                 }}
                 variant="contained"
               >
-                Thêm bài học
+                Thêm chương học
               </Button>
             </Stack>
           )}
