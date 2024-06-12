@@ -683,7 +683,7 @@ function Revenue() {
           style={{
             width: '230px',
             height: '40px',
-            marginTop: '20px'
+            marginTop: '10px'
           }}
         >
           {options.map((option) => (
@@ -703,18 +703,18 @@ function Revenue() {
           {/* <DashboardChartDay /> */}
 
           {selectedValue === 'Tổng thu nhập theo tháng' && (
-            <Card style={{ width: 800, height: 400 }}>
+            <Card style={{ width: 850, height: 430 }}>
               <Line data={dataTotal} options={options1Total} />
             </Card>
           )}
           {selectedValue === 'Lợi nhuận theo tháng' && (
-            <Card style={{ width: 800, height: 400 }}>
+            <Card style={{ width: 850, height: 430 }}>
               <Bar data={data} options={options1} />
             </Card>
           )}
           {selectedValue === 'Lợi nhuận theo ngày' && <DashboardChart />}
           {selectedValue === 'Top 10 doanh thu gia sư' && (
-            <Card style={{ width: 800, height: 400 }}>
+            <Card style={{ width: 850, height: 430 }}>
               <Bar data={chartDataTutor} options={optionsTutor} />
             </Card>
           )}
@@ -795,6 +795,17 @@ function DashboardChart() {
         font: {
           size: 18 // Chỉnh font-size tại đây
         }
+      },
+      tooltip: {
+        callbacks: {
+          label: (context) => {
+            const value = parseFloat(context.raw).toLocaleString('it-IT', {
+              style: 'currency',
+              currency: 'VND'
+            }); // Làm tròn giá trị đến 2 chữ số thập phân
+            return `Tiền: ${value}  VNĐ`;
+          }
+        }
       }
     }
   };
@@ -854,7 +865,7 @@ function DashboardChart() {
   }, [paymentData]);
 
   return (
-    <Card style={{ width: 800, height: 400 }}>
+    <Card style={{ width: 850, height: 430 }}>
       <Bar data={revenueData} options={options} />
     </Card>
   );
