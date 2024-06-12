@@ -1,5 +1,10 @@
 import axios from 'axios';
-
+export function formatCurrency(value, locale, currency) {
+  return new Intl.NumberFormat('it-IT', {
+    style: 'currency',
+    currency: 'VND'
+  }).format(value);
+}
 const api = axios.create({
   baseURL: 'http://localhost:10000/api/v1'
   // headers: {

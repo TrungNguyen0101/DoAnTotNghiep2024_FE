@@ -1,4 +1,4 @@
-import api from '@/api';
+import api, { formatCurrency } from '@/api';
 import { COURSE_DETAIL_PATH } from '@/const';
 import {
   Box,
@@ -167,7 +167,9 @@ const CourseDetailCard = ({
               <Stack width="fit-content" justifyContent="center"></Stack>
               {data?.type_course === 'true' ? (
                 <Stack width="fit-content" justifyContent="center">
-                  <Typography variant="h4">{data.price} đ</Typography>
+                  <Typography variant="h4">
+                    {formatCurrency(data.price, 'vi-VN', 'VND')}
+                  </Typography>
                 </Stack>
               ) : (
                 <Stack width="fit-content" justifyContent="center">

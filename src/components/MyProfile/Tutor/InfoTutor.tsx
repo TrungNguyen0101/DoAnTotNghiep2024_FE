@@ -2,7 +2,7 @@ import ControlTextField from '@/components/ControlTextField';
 import { Box, Button, InputAdornment } from '@mui/material';
 import { useForm } from 'react-hook-form';
 import { FormDataHaha } from './ProfileTutor';
-import api from '@/api';
+import api, { formatCurrency } from '@/api';
 import { enqueueSnackbar } from 'notistack';
 import { useCallback, useEffect } from 'react';
 import { VerifyIcon } from '@/components/icons';
@@ -47,7 +47,8 @@ const InfoTutor = ({ data }) => {
 
   useEffect(() => {
     if (data) {
-      setValue('balance', data.balance || '');
+      setValue('balance', formatCurrency(data.balance, 'vi-VN', 'VND') || '');
+
       // setValue('stripe_account_id', data.stripe_account_id || '');
       setValue('description', data.description || '');
     }
@@ -77,6 +78,7 @@ const InfoTutor = ({ data }) => {
             }
           }}
         /> */}
+        <span></span>
         <ControlTextField
           preventInput={true}
           control={control}

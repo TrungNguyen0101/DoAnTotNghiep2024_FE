@@ -30,7 +30,6 @@ const Course = () => {
   });
 
   const [courseList, setCourseList] = useState([]);
-  console.log('Course ~ courseList:', courseList);
   const [courseListRoot, setCourseListRoot] = useState([]);
 
   const [subjects, setListSubjects] = useState([]);

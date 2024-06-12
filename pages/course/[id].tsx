@@ -1,4 +1,4 @@
-import api from '@/api';
+import api, { formatCurrency } from '@/api';
 import CustomizedAccordions from '@/components/CustomizedAccordions';
 import AppRating from '@/components/AppRating';
 // import ConfirmDeleteModal from '@/components/base/modal/ConfirmDeleteModal';
@@ -77,6 +77,8 @@ const CourseDetail = () => {
   const [userLoadMessage, setUserLoadMessage] = useState('');
   const [userName, setUserName] = useState('');
   const [showChat, setShowChat] = useState(false);
+  const [isRead, setIsRead] = useState<any>();
+  const [lastMessage, setLastMessage] = useState<any>();
 
   useEffect(() => {
     const token = localStorage?.getItem('access_token');
@@ -85,57 +87,87 @@ const CourseDetail = () => {
       setUserId(decoded?.user_id);
       socket.emit('authenticate', decoded?.user_id);
 
-      socket.on('receive-message', (data) => {
+      socket.on('receive-message', async (data) => {
+        setLastMessage(data);
         if (
-          data.senderId === userLoadMessage ||
-          data.senderId === decoded?.user_id
+          (data.senderId === userLoadMessage ||
+            data.senderId === decoded?.user_id) &&
+          showChat
         ) {
           setMessages((prevMessages) => [...prevMessages, data]);
+        } else {
+          getMessageById(decoded?.user_id);
         }
+
+        if (!showChat) {
+          setIsRead(true);
+        }
+
+        // if (
+        //   !(
+        //     data.senderId === userLoadMessage ||
+        //     data.senderId === decoded?.user_id
+        //   )
+        // ) {
+        //   setIsRead(true);
+        // }
+
+        // if (
+        //   !(
+        //     data.senderId === userLoadMessage ||
+        //     data.senderId === decoded?.user_id
+        //   ) &&
+        //   showChat
+        // ) {
+        //   setIsRead(true);
+        // }
+
+        // console.log('socket.on ~ data:', data);
+        const res = await api.get(`/message/read/${decoded?.user_id}`);
+        console.log('socket.on ~ res:', res.data.data);
       });
 
       return () => {
         socket.off('receive-message');
       };
     }
-  }, [userLoadMessage]);
+  }, [userLoadMessage, showChat]);
 
-  useEffect(() => {
-    const getMessageById = async () => {
-      try {
-        const res = await api.get(`/message/${userId}`);
-        // if (res.status === 200) {
-        const result = res?.data?.data;
-        const listMessage = await Promise.all(
-          result.map(async (item) => {
-            let res: any;
-            if (item?.receiver_id === userId) {
-              res = await api.get(`/user/get-user-info/${item?.sender_id}`);
-            } else {
-              res = await api.get(`/user/get-user-info/${item?.receiver_id}`);
-            }
-            const userData = res?.data?.data;
-            return {
-              message: item,
-              user: userData
-            };
-          })
-        );
-        // Create a Set to keep track of unique user_ids
-        const uniqueUserIds = new Set();
-        const filteredListMessage = listMessage.filter((item) => {
-          if (uniqueUserIds.has(item.user?.user_id)) {
-            return false; // If user_id already exists, filter out this item
+  const getMessageById = async (id?) => {
+    try {
+      const res = await api.get(`/message/${userId || id}`);
+      const result = res?.data?.data;
+      const listMessage = await Promise.all(
+        result.map(async (item) => {
+          let res: any;
+          if (item?.receiver_id === userId) {
+            res = await api.get(`/user/get-user-info/${item?.sender_id}`);
+          } else {
+            res = await api.get(`/user/get-user-info/${item?.receiver_id}`);
           }
-          uniqueUserIds.add(item.user?.user_id);
-          return true; // If user_id is new, keep this item
-        });
+          const userData = res?.data?.data;
+          return {
+            message: item,
+            user: userData
+          };
+        })
+      );
+      // Create a Set to keep track of unique user_ids
+      const uniqueUserIds = new Set();
+      const filteredListMessage = listMessage.filter((item) => {
+        if (uniqueUserIds.has(item.user?.user_id)) {
+          return false; // If user_id already exists, filter out this item
+        }
+        uniqueUserIds.add(item.user?.user_id);
+        return true; // If user_id is new, keep this item
+      });
 
-        setListUserMessage(filteredListMessage);
-      } catch (error) {
-        console.log(error);
-      }
-    };
+      setListUserMessage(filteredListMessage);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  useEffect(() => {
     if (userId) {
       getMessageById();
     }
@@ -185,6 +217,10 @@ const CourseDetail = () => {
     socket.emit('send-message', {
       receiverId,
       message
+    });
+    console.log(lastMessage);
+    socket.emit('mark-message-read', {
+      message_id: lastMessage?.message_id
     });
     setMessage('');
     if (elementRef.current) {
@@ -252,16 +288,6 @@ const CourseDetail = () => {
     }
   }, [course_id, userId]);
 
-  // const () => = () => {
-  //   // const body = {
-  //   //   course_id,
-  //   //   student_id: decoded.user_id
-  //   // }
-
-  //   // console.log(body);
-  //   setOpen(true);
-  // };
-
   const handleMonthChange = (date: Dayjs) => {
     if (ref.current) {
       ref.current.abort();
@@ -287,7 +313,7 @@ const CourseDetail = () => {
       console.log('handleMua ~ res:', res);
       if (res.status === 200) {
         router.push(res.data.data);
-        window.location.href = res.data.data;
+        // window.location.href = res.data.data;
       }
     } catch (error) {
       console.log(error);
@@ -326,6 +352,7 @@ const CourseDetail = () => {
       chatBox.scrollTop = chatBox.scrollHeight;
     }
   }, [messages]);
+
   return (
     <Container sx={{ minHeight: '100vh' }}>
       <Grid mt={5} container>
@@ -336,7 +363,7 @@ const CourseDetail = () => {
           </Typography>
           {course?.type_course === 'true' && (
             <Typography mt={2} variant="h5" color="secondary">
-              Giá tiền : {course?.price}đ
+              Giá tiền : {formatCurrency(course?.price, 'vi-VN', 'VND')}
             </Typography>
           )}
           {/* <Divider sx={{ mt: 2 }} />

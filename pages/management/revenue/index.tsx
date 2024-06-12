@@ -22,6 +22,8 @@ import { Bar, Line } from 'react-chartjs-2';
 import SidebarLayout from '@/layouts/SidebarLayout';
 import { Container, Grid, MenuItem, Select } from '@mui/material';
 import api from '@/api';
+import Item from 'antd/es/list/Item';
+import { fontSize } from '@mui/system';
 // import TableOrder from '../TableOrder';
 // import useQueryConfig from 'src/hooks/useQueryConfig';
 // import { useQuery } from 'react-query';
@@ -43,22 +45,38 @@ function Revenue() {
   const [lengthProduct, setLengthProduct] = useState(0);
   const [lengthOrder, setLengthOrder] = useState(0);
   const [isStatus, setIsStatus] = useState(false);
-  const options = ['Doanh thu theo tháng', 'Doanh thu theo ngày'];
+  const options = [
+    'Tổng thu nhập theo tháng',
+    'Lợi nhuận theo tháng',
+    'Lợi nhuận theo ngày',
+    'Top 10 doanh thu gia sư'
+  ];
   const [selectedValue, setSelectedValue] = useState(options[0]);
 
   const [paymentStatus, setPaymentData] = useState<any>();
+  const [totalMonth, setTotalMonth] = useState<any>(0);
+  const [profitMonth, setProfitMonth] = useState<any>(0);
+  const [profitTutor, setProfitTutor] = useState<any>(0);
+  const [totalMoney, setTotalMoney] = useState<any>(0);
 
   useEffect(() => {
     const handleGetAllPayment = async () => {
       api.get('/payment').then((res) => {
         setPaymentData(res?.data?.data?.rows);
+        const totalAmount = res?.data?.data?.rows.reduce((total, payment) => {
+          return total + parseInt(payment.amount);
+        }, 0);
+
+        setTotalMoney(totalAmount);
       });
     };
     handleGetAllPayment();
   }, []);
 
   const [sortedMonths, setSortedMonths] = useState([]);
+  const [sortedMonthsTotal, setSortedMonthsTotal] = useState([]);
   const [total, setTotal] = useState<any>(0);
+  const [tutorRanking, setTutorRanking] = useState<any>([]);
 
   useEffect(() => {
     const handleData = () => {
@@ -80,6 +98,94 @@ function Revenue() {
             month: 'long'
           }).format(date);
 
+          // todo
+          return {
+            createdAt: monthName,
+            totalmoney: item.amount * 0.3,
+            year: year
+          };
+        });
+
+      const newData1 =
+        newData &&
+        newData?.reduce((acc, item) => {
+          const existingMonthIndex = acc.findIndex(
+            (entry) => entry.createdAt === item.createdAt
+          );
+
+          if (existingMonthIndex !== -1) {
+            acc[existingMonthIndex].totalmoney = (
+              parseInt(acc[existingMonthIndex].totalmoney) +
+              parseInt(item.totalmoney)
+            ).toString();
+          } else {
+            acc.push({
+              createdAt: item.createdAt,
+              totalmoney: item.totalmoney,
+              year: item.year
+            });
+          }
+
+          return acc;
+        }, []);
+
+      const totalAmount = newData1
+        ? newData1.reduce((acc, item) => acc + parseFloat(item.totalmoney), 0)
+        : 0;
+
+      setProfitMonth(totalAmount);
+
+      const currentYear = new Date().getFullYear();
+      const recentMonths = [];
+
+      // Lặp qua tất cả 12 tháng trong năm
+      for (let i = 0; i < 12; i++) {
+        const month = new Date(currentYear, i, 1).toLocaleString('default', {
+          month: 'long'
+        });
+        recentMonths.push(month);
+      }
+
+      // Map qua mảng dữ liệu và trả về kết quả
+      const newData123 = recentMonths.map((month, index) => {
+        const dataForMonth =
+          newData1 && newData1?.find((item) => item.createdAt === month);
+        return {
+          createdAt: `Tháng ${index + 1}`, // Thay thế nhãn thành Tháng 1, Tháng 2, ...
+          totalmoney: dataForMonth ? dataForMonth.totalmoney : '0',
+          year: dataForMonth ? dataForMonth.year : currentYear
+        };
+      });
+
+      // Không cần sắp xếp mảng vì chúng ta đã lặp qua tất cả các tháng trong năm
+
+      setSortedMonths(newData123);
+    };
+
+    handleData();
+  }, [paymentStatus]);
+
+  useEffect(() => {
+    const handleData = () => {
+      const newData =
+        paymentStatus?.length > 0 &&
+        paymentStatus.map((item) => {
+          // Convert the time string into a Date object
+          const timeString = item.time;
+          const year = parseInt(timeString.substring(0, 4), 10);
+          const month = parseInt(timeString.substring(4, 6), 10) - 1; // Month in JavaScript Date starts from 0
+          const day = parseInt(timeString.substring(6, 8), 10);
+          const hour = parseInt(timeString.substring(8, 10), 10);
+          const minute = parseInt(timeString.substring(10, 12), 10);
+          const second = parseInt(timeString.substring(12, 14), 10);
+          const date = new Date(year, month, day, hour, minute, second);
+
+          // Format month name
+          const monthName = new Intl.DateTimeFormat('en-US', {
+            month: 'long'
+          }).format(date);
+
+          // todo
           return {
             createdAt: monthName,
             totalmoney: item.amount,
@@ -110,6 +216,12 @@ function Revenue() {
           return acc;
         }, []);
 
+      const totalAmount = newData1
+        ? newData1.reduce((acc, item) => acc + parseFloat(item.totalmoney), 0)
+        : 0;
+
+      setTotalMonth(totalAmount);
+
       const currentYear = new Date().getFullYear();
       const recentMonths = [];
 
@@ -134,7 +246,78 @@ function Revenue() {
 
       // Không cần sắp xếp mảng vì chúng ta đã lặp qua tất cả các tháng trong năm
 
-      setSortedMonths(newData123);
+      setSortedMonthsTotal(newData123);
+    };
+
+    handleData();
+  }, [paymentStatus]);
+
+  useEffect(() => {
+    const handleData = () => {
+      // Tính tổng số tiền cho mỗi tutor
+      const tutorTotals = {};
+
+      paymentStatus?.length > 0 &&
+        paymentStatus.forEach((payment) => {
+          const tutorProfileId = payment.course_payment.tutor_profile_id;
+          const amount = parseInt(payment.amount) * 0.7;
+
+          if (tutorTotals[tutorProfileId]) {
+            tutorTotals[tutorProfileId] += amount;
+          } else {
+            tutorTotals[tutorProfileId] = amount;
+          }
+        });
+
+      // Sắp xếp tutor theo tổng số tiền giảm dần
+      const sortedTutors = Object.entries(tutorTotals).sort(
+        (a: any, b: any) => b[1] - a[1]
+      );
+
+      // Lấy 5 tutor có tổng số tiền cao nhất
+      const top5Tutors = sortedTutors.slice(0, 10);
+
+      // Trả về kết quả
+      const result = top5Tutors.map(([tutorProfileId, totalAmount]) => ({
+        tutor_profile_id: tutorProfileId,
+        total_amount: totalAmount
+      }));
+
+      const totalAmount = result.reduce(
+        (acc: any, item: any) => acc + item.total_amount,
+        0
+      );
+      setProfitTutor(totalAmount);
+
+      const fetchUserName = async (tutor_profile_id) => {
+        const response = await api.get(
+          `/tutor/get-user-by-id/${tutor_profile_id}`
+        );
+        const { first_name, last_name } = response.data.data.user;
+        return `${first_name} ${last_name}`;
+      };
+
+      const updateResultWithUserNames = async () => {
+        try {
+          // Tạo mảng các promise để lấy tên user
+          const promises = result.map(async (item) => {
+            const userName = await fetchUserName(item.tutor_profile_id);
+            return {
+              total_amount: item.total_amount,
+              user_name: userName
+            };
+          });
+
+          // Chờ tất cả các promise hoàn thành
+          const updatedResult = await Promise.all(promises);
+
+          setTutorRanking(updatedResult);
+          return updatedResult;
+        } catch (error) {
+          console.error('Error fetching user names:', error);
+        }
+      };
+      updateResultWithUserNames();
     };
 
     handleData();
@@ -174,7 +357,7 @@ function Revenue() {
     labels: sortedMonths.map((month) => month.createdAt),
     datasets: [
       {
-        label: 'Doanh thu trong 12 tháng',
+        label: 'Doanh thu mỗi tháng trong năm',
         data: sortedMonths.map((month) => month.totalmoney),
         backgroundColor: [
           'rgba(75, 192, 192, 0.6)', // Màu cho nhãn "Doanh thu trong 12 tháng"
@@ -185,9 +368,21 @@ function Revenue() {
       }
     ]
   };
-
   const options1 = {
     plugins: {
+      title: {
+        display: true,
+        text: `Tổng tiền trong biểu đồ: ${profitMonth?.toLocaleString('it-IT', {
+          style: 'currency',
+          currency: 'VND'
+        })}`,
+        padding: {
+          bottom: 10
+        },
+        font: {
+          size: 18 // Chỉnh font-size tại đây
+        }
+      },
       tooltip: {
         callbacks: {
           label: (context) => {
@@ -212,6 +407,131 @@ function Revenue() {
         title: {
           display: true,
           text: 'VNĐ (đ)'
+        }
+      }
+    }
+  };
+
+  const dataTotal = {
+    labels: sortedMonthsTotal.map((month) => month.createdAt),
+    datasets: [
+      {
+        label: `Tổng thu nhập mỗi tháng trong năm`,
+        data: sortedMonthsTotal.map((month) => month.totalmoney),
+        backgroundColor: [
+          'rgba(75, 192, 192, 0.6)', // Màu cho nhãn "Doanh thu trong 12 tháng"
+          'rgba(255, 206, 86, 0.6)', // Màu cho dữ liệu trong 12 tháng
+          'rgba(153, 102, 255, 0.6)',
+          'rgba(52, 162, 235, 0.6)'
+        ]
+      }
+    ]
+  };
+  const options1Total = {
+    type: 'line',
+    plugins: {
+      title: {
+        display: true,
+        text: `Tổng tiền trong biểu đồ: ${totalMonth?.toLocaleString('it-IT', {
+          style: 'currency',
+          currency: 'VND'
+        })}`,
+        padding: {
+          bottom: 10
+        },
+        font: {
+          size: 18 // Chỉnh font-size tại đây
+        }
+      },
+      tooltip: {
+        callbacks: {
+          label: (context) => {
+            const value = parseFloat(context.raw).toLocaleString('it-IT', {
+              style: 'currency',
+              currency: 'VND'
+            }); // Làm tròn giá trị đến 2 chữ số thập phân
+            return `Tiền: ${value}  VNĐ`;
+          }
+        }
+      }
+    },
+    scales: {
+      x: {
+        title: {
+          display: true,
+          text: 'Thời gian (Tháng)'
+        }
+      },
+      y: {
+        beginAtZero: true,
+        title: {
+          display: true,
+          text: 'VNĐ (đ)'
+        }
+      }
+    }
+  };
+
+  // =================================================================
+  const chartDataTutor = {
+    labels: tutorRanking?.map((item) => item.user_name),
+    datasets: [
+      {
+        label: 'Biểu đồ doanh thu gia sư',
+        data: tutorRanking?.map((item) => item.total_amount),
+        backgroundColor: tutorRanking?.map(
+          (_, index) => `rgba(${75 + index * 100}, 100, 192, 0.6)`
+        ), // Màu khác nhau cho mỗi thanh
+        borderColor: tutorRanking?.map(
+          (_, index) => `rgba(${75 + index * 100}, 100, 192, 1)`
+        ),
+        borderWidth: 1
+      }
+    ]
+  };
+  // Tùy chọn cho biểu đồ
+  const optionsTutor = {
+    plugins: {
+      title: {
+        display: true,
+        text: `Tổng tiền của tất cả gia sư: ${profitTutor?.toLocaleString(
+          'it-IT',
+          {
+            style: 'currency',
+            currency: 'VND'
+          }
+        )}`,
+        padding: {
+          bottom: 10
+        },
+        font: {
+          size: 18 // Chỉnh font-size tại đây
+        }
+      },
+      tooltip: {
+        callbacks: {
+          label: (context) => {
+            const value = parseFloat(context.raw).toLocaleString('it-IT', {
+              style: 'currency',
+              currency: 'VND'
+            });
+            return `Tiền: ${value} VNĐ`;
+          }
+        }
+      }
+    },
+    scales: {
+      x: {
+        title: {
+          display: true,
+          text: 'Gia sư'
+        }
+      },
+      y: {
+        beginAtZero: true,
+        title: {
+          display: true,
+          text: 'Số tiền (VNĐ)'
         }
       }
     }
@@ -315,6 +635,24 @@ function Revenue() {
           />
           <DashboardCard
             // icon={
+            //   <UserOutlined
+            //     style={{
+            //       color: 'purple',
+            //       backgroundColor: 'rgba(0,255,255,0.25)',
+            //       borderRadius: 20,
+            //       fontSize: 24,
+            //       padding: 8
+            //     }}
+            //   />
+            // }
+            title={'Tổng thu nhập'}
+            value={totalMoney.toLocaleString('it-IT', {
+              style: 'currency',
+              currency: 'VND'
+            })}
+          />
+          <DashboardCard
+            // icon={
             //   <DollarCircleOutlined
             //     style={{
             //       color: 'red',
@@ -328,7 +666,7 @@ function Revenue() {
             styled={{
               color: total < 0 ? 'red' : 'green'
             }}
-            title={'Doanh thu so với tháng trước'}
+            title={'Tổng thu nhập với tháng trước'}
             value={total + '%'}
           />
         </Space>
@@ -343,7 +681,7 @@ function Revenue() {
           value={selectedValue}
           onChange={handleChange}
           style={{
-            width: '200px',
+            width: '230px',
             height: '40px',
             marginTop: '20px'
           }}
@@ -363,12 +701,22 @@ function Revenue() {
           }}
         >
           {/* <DashboardChartDay /> */}
-          {selectedValue === 'Doanh thu theo tháng' ? (
+
+          {selectedValue === 'Tổng thu nhập theo tháng' && (
+            <Card style={{ width: 800, height: 400 }}>
+              <Line data={dataTotal} options={options1Total} />
+            </Card>
+          )}
+          {selectedValue === 'Lợi nhuận theo tháng' && (
             <Card style={{ width: 800, height: 400 }}>
               <Bar data={data} options={options1} />
             </Card>
-          ) : (
-            <DashboardChart />
+          )}
+          {selectedValue === 'Lợi nhuận theo ngày' && <DashboardChart />}
+          {selectedValue === 'Top 10 doanh thu gia sư' && (
+            <Card style={{ width: 800, height: 400 }}>
+              <Bar data={chartDataTutor} options={optionsTutor} />
+            </Card>
           )}
         </Space>
       </Grid>
@@ -379,10 +727,12 @@ function Revenue() {
 function DashboardCard({ title, value, icon, styled }: any) {
   return (
     <Card
-      style={{
-        width: '270px',
-        height: '100px'
-      }}
+      style={
+        {
+          // width: '200px',
+          // height: '150px'
+        }
+      }
     >
       <Space direction="horizontal">
         {icon}
@@ -392,103 +742,6 @@ function DashboardCard({ title, value, icon, styled }: any) {
   );
 }
 
-function DashboardChartDay() {
-  const [paymentData, setPaymentData] = useState<any>();
-
-  useEffect(() => {
-    const handleGetAllPayment = async () => {
-      api.get('/payment').then((res) => {
-        setPaymentData(res?.data?.data?.rows);
-      });
-    };
-    handleGetAllPayment();
-  }, []);
-
-  const [revenueData, setRevenueData] = useState({
-    labels: [
-      'Ngày 1',
-      'Ngày 2',
-      'Ngày 3',
-      'Ngày 4',
-      'Ngày 5',
-      'Ngày 6',
-      'Ngày 7'
-    ],
-    datasets: [
-      {
-        label: 'Weekly Revenue',
-        data: [0, 0, 0, 0, 0, 0, 0], // Initialize with zeros
-        backgroundColor: [
-          'rgba(255, 99, 132, 0.2)',
-          'rgba(255, 159, 64, 0.2)',
-          'rgba(255, 205, 86, 0.2)',
-          'rgba(75, 192, 192, 0.2)',
-          'rgba(54, 162, 235, 0.2)',
-          'rgba(153, 102, 255, 0.2)',
-          'rgba(105, 135, 196, 0.2)'
-        ],
-        borderColor: [
-          'rgb(255, 99, 132)',
-          'rgb(255, 159, 64)',
-          'rgb(255, 205, 86)',
-          'rgb(75, 192, 192)',
-          'rgb(54, 162, 235)',
-          'rgb(153, 102, 255)',
-          'rgb(144, 166, 211)'
-        ],
-        borderWidth: 1
-      }
-    ]
-  });
-
-  useEffect(() => {
-    if (paymentData) {
-      const payments = paymentData;
-
-      // Get today's date and the dates for the past 6 days
-      const today = new Date();
-      const days = Array.from({ length: 7 }, (_, i) => {
-        const date = new Date();
-        date.setDate(today.getDate() - i);
-        return date.toISOString().split('T')[0]; // Format as YYYY-MM-DD
-      }).reverse();
-
-      const revenueByDay = days.map((day) => {
-        const filteredPayments = payments.filter((payment) => {
-          const createdAt = payment.time;
-          const formattedDate = `${createdAt.substring(
-            0,
-            4
-          )}-${createdAt.substring(4, 6)}-${createdAt.substring(6, 8)}`;
-          return formattedDate === day;
-        });
-
-        const totalRevenue = filteredPayments.reduce(
-          (sum, payment) => parseInt(sum) + parseInt(payment.amount),
-          0
-        ); // Sum only the totalMoney of filtered payments
-
-        return totalRevenue;
-      });
-
-      setRevenueData((prevData) => ({
-        ...prevData,
-        datasets: [
-          {
-            ...prevData.datasets[0],
-            data: revenueByDay
-          }
-        ]
-      }));
-    }
-  }, [paymentData]);
-
-  return (
-    <Card style={{ width: 800, height: 400 }}>
-      <Bar data={revenueData} />
-    </Card>
-  );
-}
 interface Dataset {
   label: string;
   data: number[];
@@ -504,6 +757,7 @@ interface RevenueData {
 }
 function DashboardChart() {
   const [paymentData, setPaymentData] = useState<any>();
+  const [totalDay, setTotalDay] = useState<any>(0);
 
   useEffect(() => {
     const handleGetAllPayment = async () => {
@@ -527,15 +781,34 @@ function DashboardChart() {
       }
     ]
   });
+  const options = {
+    plugins: {
+      title: {
+        display: true,
+        text: `Tổng tiền trong biểu đồ: ${totalDay?.toLocaleString('it-IT', {
+          style: 'currency',
+          currency: 'VND'
+        })}`,
+        padding: {
+          bottom: 10
+        },
+        font: {
+          size: 18 // Chỉnh font-size tại đây
+        }
+      }
+    }
+  };
 
   useEffect(() => {
     if (paymentData) {
       const payments = paymentData;
       const currentDate = new Date(); // Get the current date
+      currentDate.setHours(currentDate.getHours() + 7);
 
       // Get 7 days prior to the current date
       const dates = Array.from({ length: 7 }, (_, i) => {
         const date = new Date(currentDate);
+        console.log('dates ~ date:', date);
         date.setDate(date.getDate() - i);
         return date.toISOString().split('T')[0]; // Format as YYYY-MM-DD
       }).reverse(); // Reverse the array to ensure the dates are in ascending order
@@ -552,12 +825,17 @@ function DashboardChart() {
         });
 
         const totalRevenue = filteredPayments.reduce(
-          (sum, payment) => parseInt(sum) + parseInt(payment.amount),
+          (sum, payment) => parseInt(sum) + parseInt(payment.amount) * 0.3,
           0
         ); // Sum only the totalMoney of filtered payments
 
         return totalRevenue;
       });
+      const totalRevenue = revenueByDay.reduce(
+        (acc, revenue) => acc + revenue,
+        0
+      );
+      setTotalDay(totalRevenue);
 
       setRevenueData({
         labels: labels,
@@ -577,186 +855,7 @@ function DashboardChart() {
 
   return (
     <Card style={{ width: 800, height: 400 }}>
-      <Line data={revenueData} />
-    </Card>
-  );
-}
-
-function DashboardChart1() {
-  const [paymentStatus, setPaymentData] = useState<any>();
-
-  useEffect(() => {
-    const handleGetAllPayment = async () => {
-      api.get('/payment').then((res) => {
-        setPaymentData(res?.data?.data?.rows);
-      });
-    };
-    handleGetAllPayment();
-  }, []);
-
-  const [sortedMonths, setSortedMonths] = useState([]);
-  const [total, setTotal] = useState<any>(0);
-
-  useEffect(() => {
-    const handleData = () => {
-      const newData =
-        paymentStatus?.length > 0 &&
-        paymentStatus.map((item) => {
-          // Convert the time string into a Date object
-          const timeString = item.time;
-          const year = parseInt(timeString.substring(0, 4), 10);
-          const month = parseInt(timeString.substring(4, 6), 10) - 1; // Month in JavaScript Date starts from 0
-          const day = parseInt(timeString.substring(6, 8), 10);
-          const hour = parseInt(timeString.substring(8, 10), 10);
-          const minute = parseInt(timeString.substring(10, 12), 10);
-          const second = parseInt(timeString.substring(12, 14), 10);
-          const date = new Date(year, month, day, hour, minute, second);
-
-          // Format month name
-          const monthName = new Intl.DateTimeFormat('en-US', {
-            month: 'long'
-          }).format(date);
-
-          return {
-            createdAt: monthName,
-            totalmoney: item.amount,
-            year: year
-          };
-        });
-
-      const newData1 =
-        newData &&
-        newData?.reduce((acc, item) => {
-          const existingMonthIndex = acc.findIndex(
-            (entry) => entry.createdAt === item.createdAt
-          );
-
-          if (existingMonthIndex !== -1) {
-            acc[existingMonthIndex].totalmoney = (
-              parseInt(acc[existingMonthIndex].totalmoney) +
-              parseInt(item.totalmoney)
-            ).toString();
-          } else {
-            acc.push({
-              createdAt: item.createdAt,
-              totalmoney: item.totalmoney,
-              year: item.year
-            });
-          }
-
-          return acc;
-        }, []);
-
-      const currentYear = new Date().getFullYear();
-      const recentMonths = [];
-
-      // Lặp qua tất cả 12 tháng trong năm
-      for (let i = 0; i < 12; i++) {
-        const month = new Date(currentYear, i, 1).toLocaleString('default', {
-          month: 'long'
-        });
-        recentMonths.push(month);
-      }
-
-      // Map qua mảng dữ liệu và trả về kết quả
-      const newData123 = recentMonths.map((month, index) => {
-        const dataForMonth =
-          newData1 && newData1?.find((item) => item.createdAt === month);
-        return {
-          createdAt: `Tháng ${index + 1}`, // Thay thế nhãn thành Tháng 1, Tháng 2, ...
-          totalmoney: dataForMonth ? dataForMonth.totalmoney : '0',
-          year: dataForMonth ? dataForMonth.year : currentYear
-        };
-      });
-
-      // Không cần sắp xếp mảng vì chúng ta đã lặp qua tất cả các tháng trong năm
-
-      setSortedMonths(newData123);
-    };
-
-    handleData();
-  }, [paymentStatus]);
-
-  useEffect(() => {
-    const currentMonth = new Date().getMonth() + 1;
-    const lastMonth = currentMonth === 1 ? 12 : currentMonth - 1;
-
-    let currentData = null;
-    let lastData = null;
-
-    sortedMonths?.forEach((item) => {
-      const month = parseInt(item.createdAt.split(' ')[1]);
-      if (month === currentMonth) {
-        currentData = item;
-      } else if (month === lastMonth) {
-        lastData = item;
-      }
-    });
-    if (currentData && lastData) {
-      const currentRevenue = parseInt(currentData.totalmoney);
-      const lastRevenue = parseInt(lastData.totalmoney);
-
-      const revenueDiff = currentRevenue - lastRevenue;
-      const revenueChangePercentage = (
-        (revenueDiff / lastRevenue) *
-        100
-      ).toFixed(2);
-
-      setTotal(revenueChangePercentage);
-    } else {
-    }
-  }, [sortedMonths]);
-
-  const data = {
-    labels: sortedMonths.map((month) => month.createdAt),
-    datasets: [
-      {
-        label: 'Doanh thu trong 12 tháng',
-        data: sortedMonths.map((month) => month.totalmoney),
-        backgroundColor: [
-          'rgba(75, 192, 192, 0.6)', // Màu cho nhãn "Doanh thu trong 12 tháng"
-          'rgba(255, 206, 86, 0.6)', // Màu cho dữ liệu trong 12 tháng
-          'rgba(153, 102, 255, 0.6)',
-          'rgba(52, 162, 235, 0.6)'
-        ]
-      }
-    ]
-  };
-
-  const options = {
-    plugins: {
-      tooltip: {
-        callbacks: {
-          label: (context) => {
-            const value = parseFloat(context.raw).toLocaleString('it-IT', {
-              style: 'currency',
-              currency: 'VND'
-            }); // Làm tròn giá trị đến 2 chữ số thập phân
-            return `Tiền: ${value}  VNĐ`;
-          }
-        }
-      }
-    },
-    scales: {
-      x: {
-        title: {
-          display: true,
-          text: 'Thời gian (Tháng)'
-        }
-      },
-      y: {
-        beginAtZero: true,
-        title: {
-          display: true,
-          text: 'VNĐ (đ)'
-        }
-      }
-    }
-  };
-
-  return (
-    <Card style={{ width: 800, height: 400 }}>
-      <Bar data={data} options={options} />
+      <Bar data={revenueData} options={options} />
     </Card>
   );
 }

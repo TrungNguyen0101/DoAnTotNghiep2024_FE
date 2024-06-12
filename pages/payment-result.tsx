@@ -23,7 +23,6 @@ const Payment = () => {
       return Object.keys(obj).length === 0;
     };
     if (check && !isEmpty(params)) {
-      console.log('useEffect ~ params:', params);
       const haha = async () => {
         setLoading(false);
         const res = await api.get('/payment/checksum-payment', {
@@ -32,7 +31,6 @@ const Payment = () => {
         console.log('haha ~ res:', res);
         if (res.status === 200) {
           setResult(res.data.data);
-          console.log('haha ~ res.data.data:', res.data.data);
           if (res.data.data.code === '00') {
             enqueueSnackbar({
               message: 'Thanh toán thành công!',
