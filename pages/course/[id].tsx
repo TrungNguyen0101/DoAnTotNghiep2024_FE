@@ -85,8 +85,6 @@ const CourseDetail = () => {
     if (timeDeadLine && course) {
       const startTime = new Date(timeDeadLine);
       const expiryHours = course?.hour; // 0.5 giờ, sẽ chuyển thành 30 phút
-      console.log('expiryTime ~ course:', course);
-      console.log('expiryTime ~ expiryHours:', expiryHours);
       const expiryMinutes = expiryHours * 60; // chuyển đổi giờ thành phút
       const expiryTime = new Date(startTime.getTime() + expiryMinutes * 60000);
       return expiryTime;
@@ -438,7 +436,6 @@ const CourseDetail = () => {
       chatBox.scrollTop = chatBox.scrollHeight;
     }
   }, [messages]);
-  console.log(timeLeft);
 
   return (
     <Container sx={{ minHeight: '100vh' }}>
