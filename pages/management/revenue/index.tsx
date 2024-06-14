@@ -600,7 +600,7 @@ function Revenue() {
             //     }}
             //   />
             // }
-            title={'Tổng số giao dịch'}
+            title={'Tổng số giao dịch thành công'}
             value={lengthOrder}
           />
           <DashboardCard
