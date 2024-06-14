@@ -40,8 +40,8 @@ const CoursePanel = ({ tutor }) => {
     formData.append('description', body.description);
     formData.append('image_url', body.image_url);
     formData.append('name', body.name);
-    formData.append('price', body.price.toString());
-    formData.append('hour', body.hour.toString());
+    formData.append('price', body?.price?.toString() || '');
+    formData.append('hour', body?.hour?.toString() || '');
     formData.append('type_course', body.type_course);
     formData.append('tutor_profile_id', body.tutor_profile_id);
     const request = !body?.course_id

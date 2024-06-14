@@ -34,6 +34,7 @@ const CourseDetail = () => {
   const router = useRouter();
   const course_id = router.query.id;
   const [course, setCourse] = useState(null);
+  console.log('CourseDetail ~ course:', course);
   const nameTutor = useMemo(() => {
     if (course?.tutor_profile) {
       return (
