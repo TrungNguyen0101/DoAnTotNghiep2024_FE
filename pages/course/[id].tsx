@@ -85,6 +85,8 @@ const CourseDetail = () => {
     if (timeDeadLine && course) {
       const startTime = new Date(timeDeadLine);
       const expiryHours = course?.hour; // 0.5 giờ, sẽ chuyển thành 30 phút
+      console.log('expiryTime ~ course:', course);
+      console.log('expiryTime ~ expiryHours:', expiryHours);
       const expiryMinutes = expiryHours * 60; // chuyển đổi giờ thành phút
       const expiryTime = new Date(startTime.getTime() + expiryMinutes * 60000);
       return expiryTime;
@@ -99,11 +101,19 @@ const CourseDetail = () => {
 
     if (difference > 0) {
       timeLeft = {
+        days: Math.floor(difference / (1000 * 60 * 60 * 24)),
+        hours: Math.floor((difference / (1000 * 60 * 60)) % 24),
         minutes: Math.floor((difference / 1000 / 60) % 60),
         seconds: Math.floor((difference / 1000) % 60)
       };
+    } else {
+      timeLeft = {
+        days: 0,
+        hours: 0,
+        minutes: 0,
+        seconds: 0
+      };
     }
-
     return timeLeft;
   };
 
@@ -116,7 +126,12 @@ const CourseDetail = () => {
       const newTimeLeft: any = calculateTimeLeft(expiryTime);
       setTimeLeft(newTimeLeft);
 
-      if (newTimeLeft.minutes === 0 && newTimeLeft.seconds === 0) {
+      if (
+        newTimeLeft.days === 0 &&
+        newTimeLeft.hours === 0 &&
+        newTimeLeft.minutes === 0 &&
+        newTimeLeft.seconds === 0
+      ) {
         setIsExpired(true);
       }
     }, 1000);
@@ -423,6 +438,7 @@ const CourseDetail = () => {
       chatBox.scrollTop = chatBox.scrollHeight;
     }
   }, [messages]);
+  console.log(timeLeft);
 
   return (
     <Container sx={{ minHeight: '100vh' }}>
@@ -442,17 +458,21 @@ const CourseDetail = () => {
           </Typography>
           {(myCourse || myCourseExpiry) && (
             <div>
-              {timeLeft.minutes !== undefined &&
-              timeLeft.seconds !== undefined ? (
+              {timeLeft.days !== 0 ||
+              timeLeft.hours !== 0 ||
+              timeLeft.minutes !== 0 ||
+              timeLeft.seconds !== 0 ? (
                 <Typography mt={2} variant="h4" color="black">
-                  Khóa học sẽ hết hạn sau: {timeLeft.minutes}:
+                  Khóa học sẽ hết hạn sau: {timeLeft.days} ngày {timeLeft.hours}{' '}
+                  giờ {timeLeft.minutes} phút{' '}
                   {timeLeft.seconds < 10
                     ? `0${timeLeft.seconds}`
-                    : timeLeft.seconds}
+                    : timeLeft.seconds}{' '}
+                  giây
                 </Typography>
               ) : (
                 <Typography mt={2} variant="h4" color="red">
-                  Thời gian học đã hết hạn vui lòng mua lại khóa học
+                  Thời gian học đã hết hạn, vui lòng mua lại khóa học
                 </Typography>
               )}
             </div>
