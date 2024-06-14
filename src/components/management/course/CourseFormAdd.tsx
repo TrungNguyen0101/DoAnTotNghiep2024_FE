@@ -17,7 +17,22 @@ import { useFormik } from 'formik';
 import { enqueueSnackbar } from 'notistack';
 import React, { useEffect, useState } from 'react';
 import * as yup from 'yup';
-
+import { makeStyles } from '@mui/styles';
+const useStyles = makeStyles({
+  noSpin: {
+    '& input[type=number]': {
+      '-moz-appearance': 'textfield'
+    },
+    '& input[type=number]::-webkit-outer-spin-button': {
+      '-webkit-appearance': 'none',
+      margin: 0
+    },
+    '& input[type=number]::-webkit-inner-spin-button': {
+      '-webkit-appearance': 'none',
+      margin: 0
+    }
+  }
+});
 const validationSchema = yup.object({
   name: yup.string().required('Tên danh mục không được trống'),
   description: yup.string().nullable()
@@ -30,6 +45,7 @@ function CourseFormAdd({ isOpen, onClose, data, onSave }) {
   const [selectedImageUrl, setSelectedImagUrl] = useState<any>(data?.image_url);
   const [selectedImage, setSelectedImage] = useState<any>(null);
   const [showField, setShowField] = useState<any>(false);
+  const classes = useStyles();
 
   const getCategory = () => {
     api.get('/category').then((res) => {
@@ -187,15 +203,36 @@ function CourseFormAdd({ isOpen, onClose, data, onSave }) {
               />
 
               {showField && (
-                <TextField
-                  id="price"
-                  label="Học phí"
-                  variant="standard"
-                  fullWidth
-                  margin="normal"
-                  style={{ marginBottom: 20 }}
-                  {...formik.getFieldProps('price')}
-                />
+                <div
+                  style={{
+                    display: 'flex',
+                    flexDirection: 'row',
+                    columnGap: '30px'
+                  }}
+                >
+                  <TextField
+                    id="price"
+                    label="Học phí"
+                    variant="standard"
+                    fullWidth
+                    type="number"
+                    margin="normal"
+                    style={{ marginBottom: 20 }}
+                    className={classes.noSpin}
+                    {...formik.getFieldProps('price')}
+                  />
+                  <TextField
+                    id="hour"
+                    label="Tổng giờ học (h)"
+                    variant="standard"
+                    fullWidth
+                    margin="normal"
+                    type="number"
+                    style={{ marginBottom: 20 }}
+                    className={classes.noSpin}
+                    {...formik.getFieldProps('hour')}
+                  />
+                </div>
               )}
               <div style={{ width: '100%', marginBottom: 20 }}>
                 <Typography>Loại khóa học</Typography>

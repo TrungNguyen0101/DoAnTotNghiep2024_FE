@@ -40,7 +40,8 @@ const CoursePanel = ({ tutor }) => {
     formData.append('description', body.description);
     formData.append('image_url', body.image_url);
     formData.append('name', body.name);
-    formData.append('price', body.price);
+    formData.append('price', body.price.toString());
+    formData.append('hour', body.hour.toString());
     formData.append('type_course', body.type_course);
     formData.append('tutor_profile_id', body.tutor_profile_id);
     const request = !body?.course_id
@@ -80,12 +81,13 @@ const CoursePanel = ({ tutor }) => {
           columnSpacing={2}
           my={2}
         >
-          <Grid item xs={4}>
+          {/* <Grid item xs={4}>
             <TextField label="Tên Khóa học" name="search" />
-          </Grid>
+          </Grid> */}
           <Button
             sx={{
-              height: '50px'
+              height: '50px',
+              marginLeft: '20px'
             }}
             variant="contained"
             onClick={() => {

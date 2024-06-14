@@ -23,7 +23,7 @@ import { Dayjs } from 'dayjs';
 import { jwtDecode } from 'jwt-decode';
 import { useRouter } from 'next/router';
 import { chooseAllTimeAvailable } from 'pages/tutor/[id]';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 // import io from 'socket.io-client';
 import ClearIcon from '@mui/icons-material/Clear';
 import { io } from 'socket.io-client';
@@ -34,6 +34,15 @@ const CourseDetail = () => {
   const router = useRouter();
   const course_id = router.query.id;
   const [course, setCourse] = useState(null);
+  const nameTutor = useMemo(() => {
+    if (course?.tutor_profile) {
+      return (
+        course?.tutor_profile?.user?.last_name +
+        ' ' +
+        course?.tutor_profile?.user?.first_name
+      );
+    }
+  }, [course]);
   const [courseTutorId, setCourseTutorId] = useState('null');
   const [listUserMessage, setListUserMessage] = useState<any>([]);
   const [myCourse, setMyCourse] = useState<any>(false);
@@ -188,6 +197,7 @@ const CourseDetail = () => {
   }, [course]);
 
   const getMessageByUser = async (receiver_id: any) => {
+    console.log('getMessageByUser ~ receiver_id:', receiver_id);
     setReceiverId(receiver_id);
     try {
       const res = await api.get(
@@ -366,6 +376,9 @@ const CourseDetail = () => {
               Giá tiền : {formatCurrency(course?.price, 'vi-VN', 'VND')}
             </Typography>
           )}
+          <Typography mt={2} variant="h4" color="black">
+            Gia sư : {nameTutor}
+          </Typography>
           {/* <Divider sx={{ mt: 2 }} />
           <Typography mt={2} variant="h3">
             Thông tin khóa học
