@@ -9,7 +9,6 @@ import {
 import { useRouter } from 'next/router';
 
 const CourseCard = ({ src, title, course_id, noPush }: CourseCardProps) => {
-  console.log('CourseCard ~ src:', src);
   const router = useRouter();
 
   return (

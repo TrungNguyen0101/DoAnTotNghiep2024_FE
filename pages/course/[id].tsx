@@ -34,7 +34,6 @@ const CourseDetail = () => {
   const router = useRouter();
   const course_id = router.query.id;
   const [course, setCourse] = useState(null);
-  console.log('CourseDetail ~ course:', course);
   const nameTutor = useMemo(() => {
     if (course?.tutor_profile) {
       return (
@@ -44,9 +43,11 @@ const CourseDetail = () => {
       );
     }
   }, [course]);
+
   const [courseTutorId, setCourseTutorId] = useState('null');
   const [listUserMessage, setListUserMessage] = useState<any>([]);
   const [myCourse, setMyCourse] = useState<any>(false);
+  const [myCourseExpiry, setMyCourseExpiry] = useState<any>(false);
 
   const [showFormDetail, setShowFormDetail] = useState(false);
   const [showConfirmDelete, setShowConfirmDelete] = useState(false);
@@ -73,10 +74,65 @@ const CourseDetail = () => {
   const ref = useRef<AbortController | null>(null);
 
   const [availableDay, setAvailableDay] = useState(null);
+  const [timeDeadLine, setTimeDeadLine] = useState('');
   const [highlightedDays, setHighlightedDays] = useState([]);
   const [timeAvaiLableDay, setTimeAvailableDay] = useState([]);
   const [payload, setPayload] = useState<any>({});
+  const [bookSession, setBookSession] = useState<any>({});
   const elementRef = useRef(null);
+
+  const expiryTime = useMemo(() => {
+    if (timeDeadLine && course) {
+      const startTime = new Date(timeDeadLine);
+      const expiryHours = course?.hour; // 0.5 giờ, sẽ chuyển thành 30 phút
+      const expiryMinutes = expiryHours * 60; // chuyển đổi giờ thành phút
+      const expiryTime = new Date(startTime.getTime() + expiryMinutes * 60000);
+      return expiryTime;
+    }
+  }, [course, timeDeadLine, myCourseExpiry, myCourse]);
+
+  const calculateTimeLeft = (expiryTime: any) => {
+    const now: any = new Date();
+    const difference = expiryTime - now;
+
+    let timeLeft = {};
+
+    if (difference > 0) {
+      timeLeft = {
+        minutes: Math.floor((difference / 1000 / 60) % 60),
+        seconds: Math.floor((difference / 1000) % 60)
+      };
+    }
+
+    return timeLeft;
+  };
+
+  const [timeLeft, setTimeLeft] = useState<any>(calculateTimeLeft(expiryTime));
+  const [isExpired, setIsExpired] = useState(false);
+
+  useEffect(() => {
+    if (isExpired || !myCourseExpiry) return;
+    const timer = setTimeout(() => {
+      const newTimeLeft: any = calculateTimeLeft(expiryTime);
+      setTimeLeft(newTimeLeft);
+
+      if (newTimeLeft.minutes === 0 && newTimeLeft.seconds === 0) {
+        setIsExpired(true);
+      }
+    }, 1000);
+
+    return () => clearTimeout(timer);
+  }, [expiryTime, isExpired, timeLeft]);
+  useEffect(() => {
+    if (isExpired) {
+      const handleUpdate = async () => {
+        const res = await api.put(
+          `/booked-session/expiry/${bookSession?.booked_session_id}`
+        );
+      };
+      handleUpdate();
+    }
+  }, [isExpired, bookSession?.booked_session_id]);
 
   // ----------------------------------------------------------------
   const [userId, setUserId] = useState('');
@@ -289,8 +345,12 @@ const CourseDetail = () => {
             `/booked-session/my-course?user_id=${userId}&course_id=${course_id}`
           );
           if (res.status === 200) {
-            setMyCourse(!!res.data.data.length);
+            setTimeDeadLine(res.data.data.isNotExpiry[0]?.time);
+            setMyCourse(!!res.data.data.isExpiry.length);
+            setMyCourseExpiry(!!res.data.data.isNotExpiry.length);
+            setBookSession(res.data.data.isNotExpiry[0]);
           }
+          console.log('getMyCourse ~ res.data.data:', res.data.data);
         } catch (error) {
           console.log(error);
         }
@@ -380,6 +440,23 @@ const CourseDetail = () => {
           <Typography mt={2} variant="h4" color="black">
             Gia sư : {nameTutor}
           </Typography>
+          {(myCourse || myCourseExpiry) && (
+            <div>
+              {timeLeft.minutes !== undefined &&
+              timeLeft.seconds !== undefined ? (
+                <Typography mt={2} variant="h4" color="black">
+                  Khóa học sẽ hết hạn sau: {timeLeft.minutes}:
+                  {timeLeft.seconds < 10
+                    ? `0${timeLeft.seconds}`
+                    : timeLeft.seconds}
+                </Typography>
+              ) : (
+                <Typography mt={2} variant="h4" color="red">
+                  Thời gian học đã hết hạn vui lòng mua lại khóa học
+                </Typography>
+              )}
+            </div>
+          )}
           {/* <Divider sx={{ mt: 2 }} />
           <Typography mt={2} variant="h3">
             Thông tin khóa học
@@ -414,6 +491,7 @@ const CourseDetail = () => {
                     setShowForm={setShowFormDetail}
                     setShowConfirmDelete={setShowConfirmDelete}
                     myCourse={myCourse}
+                    myCourseExpiry={myCourseExpiry}
                     isCourse={true}
                     course={course}
                   />
@@ -476,14 +554,32 @@ const CourseDetail = () => {
             <div style={{ display: 'flex', flexDirection: 'row', gap: '10px' }}>
               {course?.type_course === 'true' ? (
                 <>
-                  {myCourse ? (
-                    <Button
-                      sx={{ border: '2px solid #121117' }}
-                      variant="text"
-                      disabled
-                    >
-                      Khóa học đã được mua
-                    </Button>
+                  {myCourse || myCourseExpiry ? (
+                    <>
+                      {myCourseExpiry ? (
+                        <Button
+                          sx={{ border: '2px solid #121117' }}
+                          variant="text"
+                          disabled
+                        >
+                          Khóa học đã được mua
+                        </Button>
+                      ) : (
+                        <Button
+                          sx={{ border: '2px solid #121117' }}
+                          variant="contained"
+                          onClick={() => {
+                            if (localStorage.getItem('access_token')) {
+                              handleMua();
+                            } else {
+                              router.push('/auth/login');
+                            }
+                          }}
+                        >
+                          Mua lại khóa học
+                        </Button>
+                      )}
+                    </>
                   ) : (
                     <Button
                       sx={{ border: '2px solid #121117' }}

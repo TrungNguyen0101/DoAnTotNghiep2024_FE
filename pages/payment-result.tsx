@@ -67,7 +67,10 @@ const Payment = () => {
         <>
           {result?.code === '00' ? (
             <Text color="success">
-              <b>Mua khóa học thành công</b>
+              <b>
+                Mua khóa học thành công , thời gian học khóa học sẽ bất đầu từ
+                bây giờ
+              </b>
             </Text>
           ) : (
             <Text color="error">

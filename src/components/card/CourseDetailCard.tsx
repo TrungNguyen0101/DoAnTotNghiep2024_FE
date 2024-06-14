@@ -233,21 +233,24 @@ const CourseDetailCard = ({
       <Divider />
 
       {edit &&
-        course?.course_programs?.map((item, i) => {
-          return (
-            <CustomizedAccordions
-              key={i}
-              keyExpand={item.course_program_id}
-              title={item.tittle}
-              childTitle={item.course_program_phases}
-              data={item}
-              setDataSelected={setDataSelected}
-              setShowConfirmDelete={setShowConfirmDelete}
-              add={true}
-              setCount={setCount}
-            />
-          );
-        })}
+        course?.course_programs
+          ?.slice()
+          ?.reverse()
+          ?.map((item, i) => {
+            return (
+              <CustomizedAccordions
+                key={i}
+                keyExpand={item.course_program_id}
+                title={item.tittle}
+                childTitle={item.course_program_phases}
+                data={item}
+                setDataSelected={setDataSelected}
+                setShowConfirmDelete={setShowConfirmDelete}
+                add={true}
+                setCount={setCount}
+              />
+            );
+          })}
 
       <CourseProgramFormAdd
         data={data}

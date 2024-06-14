@@ -66,6 +66,7 @@ interface ICustomizedAccordionsProps {
   setCount?: number;
   setOpenEdit?: any;
   myCourse?: any;
+  myCourseExpiry?: any;
   isCourse?: any;
   course?: any;
 }
@@ -78,6 +79,7 @@ function CustomizedAccordions({
   add,
   setCount,
   myCourse,
+  myCourseExpiry,
   isCourse,
   course
 }: ICustomizedAccordionsProps) {
@@ -182,24 +184,22 @@ function CustomizedAccordions({
             )}
           </Stack>
         </AccordionSummary>
-        {childTitle
-          ?.slice()
-          .reverse()
-          .map((child, index) => {
-            return (
-              <AccordionDetails key={index}>
-                <PhaseCourse
-                  add={add}
-                  child={child}
-                  number={index + 1}
-                  setCount={setCount}
-                  myCourse={myCourse}
-                  isCourse={isCourse}
-                  course={course}
-                />
-              </AccordionDetails>
-            );
-          })}
+        {childTitle.map((child, index) => {
+          return (
+            <AccordionDetails key={index}>
+              <PhaseCourse
+                add={add}
+                child={child}
+                number={index + 1}
+                setCount={setCount}
+                myCourse={myCourse}
+                myCourseExpiry={myCourseExpiry}
+                isCourse={isCourse}
+                course={course}
+              />
+            </AccordionDetails>
+          );
+        })}
       </Accordion>
 
       <CourseProgramFormEdit

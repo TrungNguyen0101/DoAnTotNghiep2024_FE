@@ -10,6 +10,7 @@ const PhaseCourse = ({
   number,
   add,
   myCourse,
+  myCourseExpiry,
   isCourse,
   course
 }) => {
@@ -47,7 +48,7 @@ const PhaseCourse = ({
     <>
       <Stack direction="row" justifyContent="space-between">
         <Typography variant="h4" mb={1}>
-          {number}. {child.name}
+          {child.name}
         </Typography>
         {add && (
           <Box>
@@ -100,7 +101,20 @@ const PhaseCourse = ({
         <>
           {isCourse && course?.type_course === 'true' ? (
             <>
-              {!myCourse ? (
+              {myCourseExpiry ? (
+                <video
+                  width="400"
+                  height="200"
+                  controls
+                  controlsList="nodownload  noremoteplayback"
+                >
+                  <source
+                    id="my-video"
+                    src={child?.overview_url}
+                    type="video/mp4"
+                  />
+                </video>
+              ) : (
                 <div style={{ position: 'relative' }}>
                   <div
                     style={{
@@ -128,19 +142,6 @@ const PhaseCourse = ({
                     />
                   </video>
                 </div>
-              ) : (
-                <video
-                  width="400"
-                  height="200"
-                  controls
-                  controlsList="nodownload  noremoteplayback"
-                >
-                  <source
-                    id="my-video"
-                    src={child?.overview_url}
-                    type="video/mp4"
-                  />
-                </video>
               )}
             </>
           ) : (
