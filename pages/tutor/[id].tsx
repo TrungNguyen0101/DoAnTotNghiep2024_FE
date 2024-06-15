@@ -134,15 +134,16 @@ const DetailTutor = () => {
       <Stack direction="row" spacing={2} mt={4} justifyContent="space-between">
         <Box
           sx={{
-            height: 160,
-            minWidth: 160,
-            width: 160,
+            height: 200,
+            minWidth: 200,
+            width: 200,
             position: 'relative'
           }}
         >
           <Image
             src={tutor?.user?.avatar_url || '/static/images/avatars/3.jpg'}
             layout="fill"
+            objectFit="cover"
             style={{ borderRadius: '4px' }}
           />
         </Box>
@@ -160,9 +161,6 @@ const DetailTutor = () => {
                 (tutor?.user?.last_name || '')}
               <VerifyIcon sx={{ fontSize: 18, color: '#4caf50' }} />
             </Typography>
-            <Typography variant="h5" color="secondary">
-              Có kinh nghiệm {} năm trong nghề gia sư
-            </Typography>
 
             <Stack spacing={1}>
               <Stack>
@@ -173,18 +171,8 @@ const DetailTutor = () => {
                   alignItems="center"
                   gap="8px"
                 >
-                  <LangueTeachIcon /> {tutor?.tutor_educations?.subjects}
-                </Typography>
-              </Stack>
-              <Stack>
-                <Typography
-                  display="flex"
-                  variant="h5"
-                  color="secondary"
-                  alignItems="center"
-                  gap="8px"
-                >
-                  <PersonIcon /> {} học sinh đang theo học
+                  <LangueTeachIcon />{' '}
+                  {tutor?.tutor_educations[0]?.favorite_subject}
                 </Typography>
               </Stack>
             </Stack>

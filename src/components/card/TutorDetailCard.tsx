@@ -53,19 +53,21 @@ const TutorDetailCard = ({ data }: TutorDetailCardProps) => {
               (data?.user?.last_name || '')}
           </Typography>
           <Stack spacing={1}>
-            <Stack>
-              <Typography
-                display="flex"
-                variant="h5"
-                color="secondary"
-                alignItems="center"
-                gap="8px"
-              >
-                <LangueTeachIcon />{' '}
-                {data?.tutor_educations[0]?.favorite_subject}
-              </Typography>
-            </Stack>
-            <Stack>
+            {data?.tutor_educations[0]?.favorite_subject && (
+              <Stack>
+                <Typography
+                  display="flex"
+                  variant="h5"
+                  color="secondary"
+                  alignItems="center"
+                  gap="8px"
+                >
+                  <LangueTeachIcon />{' '}
+                  {data?.tutor_educations[0]?.favorite_subject}
+                </Typography>
+              </Stack>
+            )}
+            {/* <Stack>
               <Typography
                 display="flex"
                 variant="h5"
@@ -75,7 +77,7 @@ const TutorDetailCard = ({ data }: TutorDetailCardProps) => {
               >
                 <PersonIcon /> 20 học sinh đang theo học
               </Typography>
-            </Stack>
+            </Stack> */}
             <Stack>
               <Typography
                 display="flex"
@@ -86,16 +88,6 @@ const TutorDetailCard = ({ data }: TutorDetailCardProps) => {
               ></Typography>
             </Stack>
 
-            <Typography mt={2} variant="h4">
-              {/* {certificate.map((item, i) => (
-            <Typography key={item.user_id}    
-                variant="h4"
-                fontWeight={400}
-                className="text-ellipsis-2-row">
-                  {item.name}
-                </Typography>
-            ))} */}
-            </Typography>
             <Typography
               variant="h4"
               fontWeight={400}

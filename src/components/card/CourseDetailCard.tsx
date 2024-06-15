@@ -28,8 +28,10 @@ const CourseDetailCard = ({
   setShowConfirmDelete,
   setCount,
   edit,
+  tutor,
   isMyCourse
 }: CourseDetailCardProps) => {
+  console.log('data:', data);
   const router = useRouter();
   const [course, setCourse] = useState(null);
   const [countCourse, setCountCourse] = useState(0);
@@ -121,6 +123,19 @@ const CourseDetailCard = ({
                   <LangueTeachIcon /> {data?.category?.name}
                 </Typography>
               </Stack>
+              {data?.type_course === 'true' && (
+                <Stack>
+                  <Typography
+                    display="flex"
+                    variant="h5"
+                    color="secondary"
+                    alignItems="center"
+                    gap="8px"
+                  >
+                    <PersonIcon /> {countCourse} học sinh đang theo học
+                  </Typography>
+                </Stack>
+              )}
               <Stack>
                 <Typography
                   display="flex"
@@ -129,7 +144,12 @@ const CourseDetailCard = ({
                   alignItems="center"
                   gap="8px"
                 >
-                  <PersonIcon /> {countCourse} học sinh đang theo học
+                  Gia sư:{' '}
+                  {!tutor?.first_name
+                    ? data?.tutor_profile?.user?.first_name +
+                      ' ' +
+                      data?.tutor_profile?.user?.last_name
+                    : tutor?.first_name + ' ' + tutor.last_name}
                 </Typography>
               </Stack>
               {/* <Stack>
@@ -270,6 +290,7 @@ type CourseDetailCardProps = {
   setShowForm?: any;
   setShowConfirmDelete?: any;
   setCount?: any;
+  tutor?: any;
   edit?: boolean;
   isMyCourse?: boolean;
 };

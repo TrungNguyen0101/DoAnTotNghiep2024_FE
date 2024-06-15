@@ -91,6 +91,25 @@ const CourseDetail = () => {
     }
   }, [course, timeDeadLine, myCourseExpiry, myCourse]);
 
+  const timeCourse = useMemo(() => {
+    if (course?.hour) {
+      // Assuming course.hour is the number of hours from now
+      const currentTime: any = new Date();
+      const expiryTime: any = new Date(
+        currentTime.getTime() + course.hour * 60 * 60 * 1000
+      );
+      const timeLeftInMs = expiryTime - currentTime;
+      const timeLeft = {
+        days: Math.floor(timeLeftInMs / (1000 * 60 * 60 * 24)),
+        hours: Math.floor((timeLeftInMs / (1000 * 60 * 60)) % 24),
+        minutes: Math.floor((timeLeftInMs / 1000 / 60) % 60)
+      };
+
+      return timeLeft;
+    }
+    return null;
+  }, [course]);
+
   const calculateTimeLeft = (expiryTime: any) => {
     const now: any = new Date();
     const difference = expiryTime - now;
@@ -448,6 +467,12 @@ const CourseDetail = () => {
           {course?.type_course === 'true' && (
             <Typography mt={2} variant="h5" color="secondary">
               Giá tiền : {formatCurrency(course?.price, 'vi-VN', 'VND')}
+            </Typography>
+          )}
+          {timeCourse && (
+            <Typography mt={2} variant="h5" color="secondary">
+              Thời gian khóa học: {timeCourse.days} ngày, {timeCourse.hours}{' '}
+              giờ, {timeCourse.minutes} phút
             </Typography>
           )}
           <Typography mt={2} variant="h4" color="black">

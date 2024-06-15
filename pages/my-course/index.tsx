@@ -1,8 +1,17 @@
 import api from '@/api';
 import ControlTextField from '@/components/ControlTextField';
+import Label from '@/components/Label';
 import CourseDetailCard from '@/components/card/CourseDetailCard';
 import BaseLayout from '@/layouts/BaseLayout';
-import { Button, Container, Grid, Stack, Typography } from '@mui/material';
+import {
+  Button,
+  Container,
+  Grid,
+  MenuItem,
+  Select,
+  Stack,
+  Typography
+} from '@mui/material';
 import { jwtDecode } from 'jwt-decode';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
@@ -25,6 +34,13 @@ const Course = () => {
   const [courseListRoot, setCourseListRoot] = useState([]);
   const [userId, setUserId] = useState('');
 
+  const options = [
+    { label: 'Tất cả khóa học', value: 3 },
+    { label: 'Khóa học còn hạn', value: 2 },
+    { label: 'Khóa học hết hạn', value: 1 }
+  ];
+  const [selectedValue, setSelectedValue] = useState(options[0]);
+
   const searchKey = watch('name');
   const router = useRouter();
 
@@ -32,10 +48,29 @@ const Course = () => {
     const getTutor = async () => {
       try {
         api
-          .get(`/booked-session/my-course-user?user_id=${userId}`)
+          .get(
+            `/booked-session/my-course-user?user_id=${userId}&status=${
+              selectedValue.value || selectedValue
+            }`
+          )
           .then((res) => {
-            setCourseList(res.data.data);
-            setCourseListRoot(res.data.data);
+            const result = [
+              ...(res?.data?.data?.sessions || []),
+              ...(res?.data?.data?.courses || [])
+            ];
+            const uniqueCategories = {};
+            let uniqueData = result.reduce((unique, item) => {
+              // Check if there is no existing item with the same course_id
+              if (!unique.some((obj) => obj.course_id === item.course_id)) {
+                unique.push(item);
+              }
+              return unique;
+            }, []);
+
+            console.log('.then ~ result:', uniqueData);
+            // console.log('.then ~ reuslt:', reuslt);
+            setCourseList(uniqueData);
+            setCourseListRoot(result);
           });
       } catch (error) {
         console.log(error);
@@ -44,7 +79,7 @@ const Course = () => {
     if (userId) {
       getTutor();
     }
-  }, [userId]);
+  }, [userId, selectedValue]);
 
   useEffect(() => {
     handleFilter();
@@ -63,11 +98,18 @@ const Course = () => {
   const handleFilter = () => {
     let lists = [...courseListRoot];
     if (searchKey) {
-      lists = lists.filter((x) => x?.course.name?.includes(searchKey));
+      lists = lists.filter(
+        (x) =>
+          x?.course?.name?.includes(searchKey) || x?.name?.includes(searchKey)
+      );
       setCourseList(lists);
     } else {
       setCourseList(courseListRoot);
     }
+  };
+
+  const handleChange = (event) => {
+    setSelectedValue(event.target.value);
   };
 
   return (
@@ -94,9 +136,35 @@ const Course = () => {
               }}
             />
           </Grid>
+          <Grid item xs={4}>
+            <Typography variant="h5">Lọc khóa học</Typography>
+            <Select
+              labelId="select-label"
+              id="select"
+              defaultValue={selectedValue.value}
+              value={selectedValue.value || selectedValue}
+              onChange={handleChange}
+              style={{
+                width: '230px',
+                height: '55px',
+                marginTop: '5px'
+              }}
+            >
+              {options.map((option) => (
+                <MenuItem key={option.label} value={option.value}>
+                  {option.label}
+                </MenuItem>
+              ))}
+            </Select>
+          </Grid>
         </Grid>
         {courseList?.map((item, i) => (
-          <CourseDetailCard key={i} data={item.course} isMyCourse={true} />
+          <CourseDetailCard
+            key={i}
+            data={item.course || item}
+            tutor={item.tutor}
+            isMyCourse={true}
+          />
         ))}
       </Stack>
     </Container>

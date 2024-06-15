@@ -35,7 +35,7 @@ const TutorSection = () => {
           </Typography>
           <Box>
             <Grid container spacing={3}>
-              {tutorList.slice(0, 6).map((item) => (
+              {tutorList.slice(0, 3).map((item) => (
                 <Grid key={item.tutor_profile_id} item xs={4}>
                   <TutorCard data={item} />
                 </Grid>

@@ -13,7 +13,7 @@ const TutorCard = ({ data }) => {
         transition: 'transform .5s',
         borderRadius: '12px',
         width: '100%',
-        // height: 232,
+        height: 400,
         p: '16px',
         boxShadow: 'unset',
         border: '1px solid #DBDBDB',
