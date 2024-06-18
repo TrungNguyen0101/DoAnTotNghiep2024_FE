@@ -206,3 +206,31 @@ a {
 .exit {
   // position: absolute;
 }
+.pagination {
+  display: flex;
+  justify-content: center;
+  list-style-type: none;
+  padding: 0;
+}
+
+.page-item {
+  margin: 0 5px;
+}
+
+.page-link {
+  padding: 8px 16px;
+  border: 1px solid #ccc;
+  cursor: pointer;
+  text-decoration: none;
+  color: #007bff;
+}
+
+.page-link:hover {
+  background-color: #eee;
+}
+
+.active .page-link {
+  background-color: #007bff;
+  color: white;
+  border-color: #007bff;
+}

@@ -15,6 +15,7 @@ import {
 } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
+import ReactPaginate from 'react-paginate';
 
 interface FormData {
   name: string;
@@ -37,6 +38,25 @@ const Course = () => {
   const [value, setValue] = useState(null);
 
   const searchKey = watch('name');
+
+  // --------------------
+  const [currentItems, setCurrentItems] = useState<any>([]);
+  const [pageCount, setPageCount] = useState<any>(0);
+  const [itemOffset, setItemOffset] = useState<any>(0);
+  const itemsPerPage = 5;
+  const [currentPage, setCurrentPage] = useState<number>(0);
+
+  useEffect(() => {
+    const endOffset = itemOffset + itemsPerPage;
+    setCurrentItems(courseList.slice(itemOffset, endOffset));
+    setPageCount(Math.ceil(courseList.length / itemsPerPage));
+  }, [itemOffset, itemsPerPage, courseList]);
+
+  const handlePageClick = (event: { selected: number }) => {
+    const newOffset = (event.selected * itemsPerPage) % courseList.length;
+    setItemOffset(newOffset);
+    setCurrentPage(event.selected);
+  };
 
   const getTutor = async () => {
     try {
@@ -86,16 +106,11 @@ const Course = () => {
     } else {
       setCourseList(courseListRoot);
     }
+    setItemOffset(0); // Reset itemOffset về 0
+    setCurrentPage(0); // Reset currentPage về 0 (tương ứng với trang 1)
   };
 
   const handleChange = (event, newValue) => {
-    // const getCourse = () => {
-    //   api.get('/course/get-by-category-id/' + newValue?.value).then((res) => {
-    //     console.log('api.get ~ res:', res);
-    //     setCourseList(res.data.data);
-    //     setCourseListRoot(res.data.data);
-    //   });
-    // };
     let lists = [...courseListRoot];
 
     if (newValue?.value) {
@@ -105,6 +120,8 @@ const Course = () => {
       setCourseList(courseListRoot);
     }
     setValue(newValue);
+    setItemOffset(0); // Reset itemOffset về 0
+    setCurrentPage(0); // Reset currentPage về 0 (tương ứng với trang 1)
   };
 
   return (
@@ -156,9 +173,28 @@ const Course = () => {
             </Box>
           </Grid>
         </Grid>
-        {courseList.map((item, i) => (
+        {currentItems.map((item, i) => (
           <CourseDetailCard key={i} data={item} />
         ))}
+
+        <ReactPaginate
+          breakLabel="..."
+          nextLabel=" >"
+          onPageChange={handlePageClick}
+          pageRangeDisplayed={5}
+          pageCount={pageCount}
+          previousLabel="< "
+          renderOnZeroPageCount={null}
+          containerClassName="pagination"
+          pageClassName="page-item"
+          pageLinkClassName="page-link"
+          previousClassName="page-item"
+          previousLinkClassName="page-link"
+          nextClassName="page-item"
+          nextLinkClassName="page-link"
+          activeClassName="active"
+          forcePage={currentPage} // Set trang hiện tại
+        />
       </Stack>
     </Container>
   );

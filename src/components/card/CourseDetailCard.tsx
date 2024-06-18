@@ -31,7 +31,6 @@ const CourseDetailCard = ({
   tutor,
   isMyCourse
 }: CourseDetailCardProps) => {
-  console.log('data:', data);
   const router = useRouter();
   const [course, setCourse] = useState(null);
   const [countCourse, setCountCourse] = useState(0);
