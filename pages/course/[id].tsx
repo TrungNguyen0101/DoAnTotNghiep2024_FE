@@ -186,7 +186,6 @@ const CourseDetail = () => {
       socket.emit('authenticate', decoded?.user_id);
 
       socket.on('receive-message', async (data) => {
-        setLastMessage(data);
         if (
           (data.senderId === userLoadMessage ||
             data.senderId === decoded?.user_id) &&
@@ -221,6 +220,9 @@ const CourseDetail = () => {
         // }
 
         // console.log('socket.on ~ data:', data);
+        if (data) {
+          setLastMessage(data);
+        }
         const res = await api.get(`/message/read/${decoded?.user_id}`);
         console.log('socket.on ~ res:', res.data.data);
       });
@@ -313,13 +315,15 @@ const CourseDetail = () => {
     }
   };
   const sendMessage = () => {
+    // console.log(lastMessage);
+    // if (lastMessage?.message_id) {
+    //   socket.emit('mark-message-read', {
+    //     message_id: lastMessage?.message_id
+    //   });
+    // }
     socket.emit('send-message', {
       receiverId,
       message
-    });
-    console.log(lastMessage);
-    socket.emit('mark-message-read', {
-      message_id: lastMessage?.message_id
     });
     setMessage('');
     if (elementRef.current) {

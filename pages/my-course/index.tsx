@@ -87,11 +87,13 @@ const Course = () => {
 
   useEffect(() => {
     const token = localStorage?.getItem('access_token');
-    const decoded = jwtDecode<any>(token);
-    if (decoded?.user_id) {
-      setUserId(decoded?.user_id);
-    } else {
-      router.push('/auth/login');
+    if (token) {
+      const decoded = jwtDecode<any>(token);
+      if (decoded?.user_id) {
+        setUserId(decoded?.user_id);
+      } else {
+        router.push('/auth/login');
+      }
     }
   }, []);
 
