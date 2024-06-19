@@ -83,6 +83,13 @@ function CustomizedAccordions({
   isCourse,
   course
 }: ICustomizedAccordionsProps) {
+  const sortedChildTitle = React.useMemo(() => {
+    return childTitle.slice().sort((a, b) => {
+      if (a.name < b.name) return -1;
+      if (a.name > b.name) return 1;
+      return 0;
+    });
+  }, [childTitle]);
   const [expanded, setExpanded] = React.useState<string | false>('panel1');
   const [openEdit, setOpenEdit] = React.useState(false);
   const [openPhase, setOpenPhase] = React.useState(false);
@@ -184,25 +191,22 @@ function CustomizedAccordions({
             )}
           </Stack>
         </AccordionSummary>
-        {childTitle
-          ?.slice()
-          ?.reverse()
-          .map((child, index) => {
-            return (
-              <AccordionDetails key={index}>
-                <PhaseCourse
-                  add={add}
-                  child={child}
-                  number={index + 1}
-                  setCount={setCount}
-                  myCourse={myCourse}
-                  myCourseExpiry={myCourseExpiry}
-                  isCourse={isCourse}
-                  course={course}
-                />
-              </AccordionDetails>
-            );
-          })}
+        {sortedChildTitle.map((child, index) => {
+          return (
+            <AccordionDetails key={index}>
+              <PhaseCourse
+                add={add}
+                child={child}
+                number={index + 1}
+                setCount={setCount}
+                myCourse={myCourse}
+                myCourseExpiry={myCourseExpiry}
+                isCourse={isCourse}
+                course={course}
+              />
+            </AccordionDetails>
+          );
+        })}
       </Accordion>
 
       <CourseProgramFormEdit
