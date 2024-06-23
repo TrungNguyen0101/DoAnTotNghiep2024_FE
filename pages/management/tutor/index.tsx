@@ -16,7 +16,6 @@ import ClearIcon from '@mui/icons-material/Clear';
 import { enqueueSnackbar } from 'notistack';
 function TutorProfile() {
   const [data, setData] = useState([]);
-  console.log('TutorProfile ~ data:', data);
   const [showFormDetail, setShowFormDetail] = useState(false);
   const [showConfirmDelete, setShowConfirmDelete] = useState(false);
   const [dataSelected, setDataSelected] = useState<any>();
@@ -24,7 +23,6 @@ function TutorProfile() {
   const fetchData = () => {
     api.get('tutor').then((res) => {
       setData([...res?.data?.data]);
-      console.log('123');
     });
   };
 
@@ -165,6 +163,10 @@ function TutorProfile() {
               color="error"
               size="small"
               onClick={() => {
+                // handleApproveTutor(row?.tutor_profile_id, {
+                //   check_approve: false,
+                //   approve: true
+                // });
                 setDataSelected(row);
                 setShowConfirmDelete(true);
               }}
@@ -179,10 +181,17 @@ function TutorProfile() {
 
   const handleDelete = () => {
     const tutor_id = dataSelected.tutor_profile_id;
-    api.delete(`tutor/${tutor_id}`).then((res) => {
-      fetchData();
-      setShowConfirmDelete(false);
+
+    handleApproveTutor(tutor_id, {
+      check_approve: false,
+      approve: true
     });
+    fetchData();
+    setShowConfirmDelete(false);
+    // api.delete(`tutor/${tutor_id}`).then((res) => {
+    //   fetchData();
+    //   setShowConfirmDelete(false);
+    // });
   };
 
   return (

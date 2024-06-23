@@ -10,12 +10,20 @@ import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye';
 import api from '@/api';
 import Image from 'next/image';
 import ModalInfoCourse from '../../../src/components/management/course/ModalInfoCourse';
+import { enqueueSnackbar } from 'notistack';
 
 function CourseManage() {
   const [data, setData] = useState([]);
+  console.log('CourseManage ~ data:', data);
   const [showFormDetail, setShowFormDetail] = useState(false);
   const [showConfirmDelete, setShowConfirmDelete] = useState(false);
   const [dataSelected, setDataSelected] = useState<any>();
+
+  const fetchData = () => {
+    api.get('/course').then((res) => {
+      setData(res?.data?.data);
+    });
+  };
 
   useEffect(() => {
     fetchData();
@@ -53,7 +61,6 @@ function CourseManage() {
       width: 150,
       title: 'Hình ảnh',
       render: (_, row) => {
-        console.log('CourseManage ~ row:', row);
         return row?.image_url !== 'null' ? (
           <Image
             width={100}
@@ -72,7 +79,7 @@ function CourseManage() {
       width: 150,
       fixed: 'left',
       render: (_, row) => {
-        return <p>{row.price !== 'undefined' ? row.price : 'Miễn phí'}</p>;
+        return <p>{row.price ? row.price : 'Miễn phí'}</p>;
       }
     },
     {
@@ -119,15 +126,14 @@ function CourseManage() {
     }
   ];
 
-  const fetchData = () => {
-    api.get('course').then((res) => {
-      setData([...res?.data?.data]);
-    });
-  };
-
   const handleDelete = () => {
     const courseId = dataSelected.course_id;
     api.delete(`course/${courseId}`).then((res) => {
+      enqueueSnackbar({
+        message: 'Xóa khóa học thành công!',
+        variant: 'success',
+        autoHideDuration: 1500
+      });
       fetchData();
       setShowConfirmDelete(false);
     });
@@ -154,7 +160,7 @@ function CourseManage() {
           <Grid item xs={12}>
             <MyTable
               title={'Danh sách khóa học'}
-              rowKey="tutor_profile_id"
+              rowKey="tutor_profile_id_123"
               dataRows={data}
               columns={columns}
             />

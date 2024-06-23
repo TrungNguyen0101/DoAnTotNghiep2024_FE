@@ -11,6 +11,7 @@ import EditIcon from '@mui/icons-material/Edit';
 import ConfirmDeleteModal from '@/components/base/modal/ConfirmDeleteModal';
 import api from '@/api';
 import Image from 'next/image';
+import { enqueueSnackbar } from 'notistack';
 
 function ApplicationsTransactions() {
   const [data, setData] = useState([]);
@@ -41,7 +42,15 @@ function ApplicationsTransactions() {
       dataIndex: 'image_url',
       fixed: 'left',
       render: (dom: any) => {
-        return <Image src={dom} width="80px" height="60px" />;
+        console.log('ApplicationsTransactions ~ dom:', dom);
+        // Use a fallback URL if dom is null or undefined
+        const imageUrl =
+          dom !== 'null'
+            ? dom
+            : 'https://res.cloudinary.com/dsrvia1wu/image/upload/v1718213207/nguyenGMO/nje3lidoyatk33ukurfi.png';
+        return (
+          <Image src={imageUrl} alt="Category Image" width={80} height={60} />
+        );
       }
     },
     {
@@ -97,6 +106,11 @@ function ApplicationsTransactions() {
   const handleDelete = () => {
     const { category_id } = dataSelected;
     api.delete(`category/${category_id}`).then(() => {
+      enqueueSnackbar({
+        message: 'Xóa thành công!',
+        variant: 'success',
+        autoHideDuration: 1500
+      });
       fetchData();
       setShowConfirmDelete(false);
     });

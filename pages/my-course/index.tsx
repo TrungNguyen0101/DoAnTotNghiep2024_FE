@@ -67,7 +67,6 @@ const Course = () => {
               return unique;
             }, []);
 
-            console.log('.then ~ result:', uniqueData);
             // console.log('.then ~ reuslt:', reuslt);
             setCourseList(uniqueData);
             setCourseListRoot(result);

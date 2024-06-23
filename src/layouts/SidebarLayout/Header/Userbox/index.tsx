@@ -25,6 +25,8 @@ import AccountTreeTwoToneIcon from '@mui/icons-material/AccountTreeTwoTone';
 import { useRouter } from 'next/router';
 import { jwtDecode } from 'jwt-decode';
 import api from '@/api';
+const DEFAULT_AVATAR_URL =
+  'https://res.cloudinary.com/dsrvia1wu/image/upload/v1718213207/nguyenGMO/nje3lidoyatk33ukurfi.png';
 
 const UserBoxButton = styled(Button)(
   ({ theme }) => `
@@ -78,20 +80,21 @@ function HeaderUserbox() {
   const [user, setUser] = useState({
     name: '',
     jobtitle: '',
-    avatar: ''
+    avatar:
+      'https://res.cloudinary.com/dsrvia1wu/image/upload/v1718213207/nguyenGMO/nje3lidoyatk33ukurfi.png'
   });
 
   const fetchData = async () => {
     const data = localStorage.getItem('access_token');
-    const decoddeToken: any = jwtDecode(data);
-    if (decoddeToken != null) {
-      const user_id = decoddeToken['user_id'];
+    const decodedToken: any = jwtDecode(data);
+    if (decodedToken != null) {
+      const user_id = decodedToken['user_id'];
       const res = await api.get(`/user/get-user-info/${user_id}`);
       if (res != null) {
         setUser({
-          name: res.data?.data.last_name,
+          name: res.data?.data.last_name || '',
           jobtitle: '',
-          avatar: ''
+          avatar: res.data?.data.avatar || DEFAULT_AVATAR_URL
         });
       }
     }

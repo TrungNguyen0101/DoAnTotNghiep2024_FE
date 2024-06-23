@@ -18,6 +18,7 @@ function MyTable({
   createText,
   onCreateData
 }: IMyTableProps) {
+  console.log('dataRows:', dataRows);
   const [data, setData] = useState(dataRows);
 
   const handleTableChange = (pagination, filters, sorter) => {

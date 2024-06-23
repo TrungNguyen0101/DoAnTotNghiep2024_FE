@@ -77,31 +77,31 @@ function StudentProfile() {
       width: 200,
       fixed: 'left',
       render: (_, row) => <p>{row.user?.phone_number}</p>
-    },
-    {
-      width: 60,
-      title: 'Action',
-      align: 'center',
-      dataIndex: 'Action',
-      fixed: 'right',
-      render: (_, row) => (
-        <>
-          <Box sx={{ display: 'flex', justifyContent: 'center' }}>
-            <IconButton
-              aria-label="delete"
-              color="error"
-              size="small"
-              onClick={() => {
-                setDataSelected(row);
-                setShowConfirmDelete(true);
-              }}
-            >
-              <DeleteOutlineIcon fontSize="small" />
-            </IconButton>
-          </Box>
-        </>
-      )
     }
+    // {
+    //   width: 60,
+    //   title: 'Action',
+    //   align: 'center',
+    //   dataIndex: 'Action',
+    //   fixed: 'right',
+    //   render: (_, row) => (
+    //     <>
+    //       <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+    //         <IconButton
+    //           aria-label="delete"
+    //           color="error"
+    //           size="small"
+    //           onClick={() => {
+    //             setDataSelected(row);
+    //             setShowConfirmDelete(true);
+    //           }}
+    //         >
+    //           <DeleteOutlineIcon fontSize="small" />
+    //         </IconButton>
+    //       </Box>
+    //     </>
+    //   )
+    // }
   ];
   console.log(dataSelected);
 

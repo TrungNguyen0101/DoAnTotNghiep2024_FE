@@ -65,6 +65,11 @@ const CoursePanel = ({ tutor }) => {
     const { course_id } = dataSelected;
 
     api.delete(`course/${course_id}`).then(() => {
+      enqueueSnackbar({
+        message: 'Xóa khóa học thành công!',
+        variant: 'success',
+        autoHideDuration: 1500
+      });
       getTutor();
       setShowConfirmDelete(false);
     });
