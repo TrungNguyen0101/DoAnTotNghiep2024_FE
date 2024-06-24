@@ -833,7 +833,7 @@ const CourseDetail = () => {
               </div>
             )}
             <div className="image-container">
-              {listUserMessage.length &&
+              {listUserMessage.length ? (
                 listUserMessage.map((message) => {
                   return (
                     <Tooltip
@@ -869,7 +869,10 @@ const CourseDetail = () => {
                       </div>
                     </Tooltip>
                   );
-                })}
+                })
+              ) : (
+                <div></div>
+              )}
             </div>
           </div>
         )}
