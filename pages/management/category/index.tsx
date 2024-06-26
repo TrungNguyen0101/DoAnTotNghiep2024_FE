@@ -12,12 +12,39 @@ import ConfirmDeleteModal from '@/components/base/modal/ConfirmDeleteModal';
 import api from '@/api';
 import Image from 'next/image';
 import { enqueueSnackbar } from 'notistack';
+import { useRouter } from 'next/router';
+import { jwtDecode } from 'jwt-decode';
+import { ROLE_ADMIN_ID } from '@/const';
 
 function ApplicationsTransactions() {
   const [data, setData] = useState([]);
   const [showForm, setShowForm] = useState(false);
   const [showConfirmDelete, setShowConfirmDelete] = useState(false);
   const [dataSelected, setDataSelected] = useState<any>();
+
+  const router = useRouter();
+  const getInfoUser = async () => {
+    const token = localStorage?.getItem('access_token');
+    if (token) {
+      const decoded = jwtDecode<any>(token);
+      try {
+        const res = await api.get(`/user/get-user-info/${decoded?.user_id}`);
+        if (res.status === 200) {
+          const user = res.data.data;
+          if (user.role_id !== ROLE_ADMIN_ID) {
+            router.push('/');
+          }
+        }
+      } catch (error) {
+        router.push('/');
+      }
+    } else {
+      router.push('/auth/login');
+    }
+  };
+  useEffect(() => {
+    getInfoUser();
+  }, []);
 
   useEffect(() => {
     fetchData();

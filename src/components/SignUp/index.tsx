@@ -23,7 +23,7 @@ import Typography from '@mui/material/Typography';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
 import { useSnackbar } from 'notistack';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { ZodType, z } from 'zod';
 import ControlTextField from '../ControlTextField';
@@ -92,6 +92,16 @@ function Copyright(props) {
 export default function SignUp() {
   const router = useRouter();
   const { enqueueSnackbar } = useSnackbar();
+
+  const getInfoUser = async () => {
+    const token = localStorage?.getItem('access_token');
+    if (token) {
+      router.push('/');
+    }
+  };
+  useEffect(() => {
+    getInfoUser();
+  }, []);
 
   const schema: ZodType = z
     .object({

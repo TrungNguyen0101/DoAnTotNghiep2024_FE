@@ -288,7 +288,6 @@ const CourseDetail = () => {
   }, [course]);
 
   const getMessageByUser = async (receiver_id: any) => {
-    console.log('getMessageByUser ~ receiver_id:', receiver_id);
     setReceiverId(receiver_id);
     try {
       const res = await api.get(
@@ -309,11 +308,11 @@ const CourseDetail = () => {
     }
   };
 
-  const handleLoadMessage = () => {
-    if (userLoadMessage) {
-      getMessageByUser(userLoadMessage);
-    }
-  };
+  // const handleLoadMessage = () => {
+  //   if (userLoadMessage) {
+  //     getMessageByUser(userLoadMessage);
+  //   }
+  // };
   const sendMessage = () => {
     // console.log(lastMessage);
     // if (lastMessage?.message_id) {

@@ -24,6 +24,9 @@ import { Container, Grid, MenuItem, Select } from '@mui/material';
 import api from '@/api';
 import Item from 'antd/es/list/Item';
 import { fontSize } from '@mui/system';
+import { jwtDecode } from 'jwt-decode';
+import { useRouter } from 'next/router';
+import { ROLE_ADMIN_ID, ROLE_TEACHER_ID } from '@/const';
 // import TableOrder from '../TableOrder';
 // import useQueryConfig from 'src/hooks/useQueryConfig';
 // import { useQuery } from 'react-query';
@@ -77,6 +80,30 @@ function Revenue() {
   const [sortedMonthsTotal, setSortedMonthsTotal] = useState([]);
   const [total, setTotal] = useState<any>(0);
   const [tutorRanking, setTutorRanking] = useState<any>([]);
+
+  const router = useRouter();
+  const getInfoUser = async () => {
+    const token = localStorage?.getItem('access_token');
+    if (token) {
+      const decoded = jwtDecode<any>(token);
+      try {
+        const res = await api.get(`/user/get-user-info/${decoded?.user_id}`);
+        if (res.status === 200) {
+          const user = res.data.data;
+          if (user.role_id !== ROLE_ADMIN_ID) {
+            router.push('/');
+          }
+        }
+      } catch (error) {
+        router.push('/');
+      }
+    } else {
+      router.push('/auth/login');
+    }
+  };
+  useEffect(() => {
+    getInfoUser();
+  }, []);
 
   useEffect(() => {
     const handleData = () => {

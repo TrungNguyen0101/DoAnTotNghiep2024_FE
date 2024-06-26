@@ -62,14 +62,7 @@ function ProfileTutor() {
       setUserId(decoded?.user_id);
       try {
         const res = await api.get(`/user/get-user-info/${decoded?.user_id}`);
-        // const resSchool = await api.get('/school');
         console.log('getInfoUser ~ res:', res);
-
-        // setSchool(
-        //   resSchool.data.data.map((item) => {
-        //     return { name: item.name, id: item.school_id };
-        //   })
-        // );
 
         if (res.status === 200) {
           setUser(res.data.data);

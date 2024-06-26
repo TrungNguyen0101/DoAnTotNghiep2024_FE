@@ -22,6 +22,7 @@ import {
 import { useRouter } from 'next/router';
 import { Stack } from '@mui/material';
 import { enqueueSnackbar } from 'notistack';
+import { useEffect } from 'react';
 
 function Copyright(props) {
   return (
@@ -48,6 +49,16 @@ type FormData = {
 
 export default function SignIn() {
   const router = useRouter();
+
+  const getInfoUser = async () => {
+    const token = localStorage?.getItem('access_token');
+    if (token) {
+      router.push('/');
+    }
+  };
+  useEffect(() => {
+    getInfoUser();
+  }, []);
 
   const schema: ZodType = z.object({
     email: z
