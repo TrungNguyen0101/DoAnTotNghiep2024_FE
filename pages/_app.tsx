@@ -1,4 +1,4 @@
-import type { ReactElement, ReactNode } from 'react';
+import { useEffect, type ReactElement, type ReactNode } from 'react';
 import type { NextPage } from 'next';
 import type { AppProps } from 'next/app';
 
@@ -34,6 +34,24 @@ function TokyoApp(props: TokyoAppProps) {
   Router.events.on('routeChangeStart', nProgress.start);
   Router.events.on('routeChangeError', nProgress.done);
   Router.events.on('routeChangeComplete', nProgress.done);
+
+  useEffect(() => {
+    const handleContextMenu = (event) => {
+      event.preventDefault();
+    };
+
+    const handleInspect = (event) => {
+      event.preventDefault();
+    };
+
+    document.addEventListener('contextmenu', handleContextMenu);
+    document.addEventListener('keydown', handleInspect);
+
+    return () => {
+      document.removeEventListener('contextmenu', handleContextMenu);
+      document.removeEventListener('keydown', handleInspect);
+    };
+  }, []);
 
   return (
     <SnackbarProvider maxSnack={3}>
