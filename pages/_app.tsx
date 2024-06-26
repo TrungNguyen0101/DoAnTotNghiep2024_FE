@@ -41,7 +41,10 @@ function TokyoApp(props: TokyoAppProps) {
     };
 
     const handleInspect = (event) => {
-      event.preventDefault();
+      if (event.keyCode === 123) {
+        // Kiểm tra nếu phím được nhấn là F12
+        event.preventDefault();
+      }
     };
 
     document.addEventListener('contextmenu', handleContextMenu);
